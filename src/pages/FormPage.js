@@ -34,7 +34,7 @@ const FormPage = () => {
 
     try {
       // Upload the photo to Supabase storage
-      const { data: photoData, error: uploadError } = await supabase.storage
+      const { error: uploadError } = await supabase.storage
         .from('sachin') // Replace 'sachin' with your bucket's name
         .upload(fileName, formData.photo);
 
@@ -56,7 +56,7 @@ const FormPage = () => {
       }
 
       // Insert form data into the 'users' table
-      const { data: userData, error: insertError } = await supabase
+      const { error: insertError } = await supabase
         .from('users') // Replace 'users' with your actual table name
         .insert([{
           name: formData.name,
