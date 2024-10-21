@@ -7,6 +7,9 @@ const WelcomePage = () => {
 
   return (
     <div className="welcome-container">
+      {/* Add the logo image at the top */}
+      <img src={"./kpl2025.png"} alt="KPL 2025" className="logo" />
+
       <h1>Welcome to KPL 2025</h1>
       <div className="button-container">
         {/* Button to navigate directly to the form */}
@@ -17,7 +20,7 @@ const WelcomePage = () => {
       </div>
       
       {/* Footer section for copyright */}
-      <footer className="footer">
+      <footer className="footer" id='footerright'>
         <p>&copy; 2024 mpshetty. All rights reserved.</p>
       </footer>
     </div>
