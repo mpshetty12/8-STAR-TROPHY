@@ -11,7 +11,7 @@ const WelcomePage = () => {
   useEffect(() => {
     // Fetch the number of registered users from the database
     const fetchUserCount = async () => {
-      const { data, error, count } = await supabase.from('users').select('*', { count: 'exact' });
+      const { error, count } = await supabase.from('users').select('*', { count: 'exact' });
       if (error) {
         console.error('Error fetching user count:', error);
       } else {
