@@ -12,13 +12,43 @@
 
 /* Styling for the logo */
 .logo {
-    width: 150px; /* Adjust the size of the logo */
-    margin-bottom: 20px; /* Space between logo and heading */
+    width: 150px;
+    margin-bottom: 20px;
     transition: transform 0.3s ease;
 }
 
 .logo:hover {
     transform: scale(1.1); /* Slight zoom effect on hover */
+}
+
+/* Animated user count container */
+.user-count-container {
+    margin-bottom: 20px;
+}
+
+.animated-count {
+    font-size: 4em;
+    font-weight: bold;
+    color: #fff;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    animation: countAnimation 2s ease-out; /* Optional animation styling */
+}
+
+.count-text {
+    font-size: 1.5em;
+    color: #fff;
+}
+
+/* Keyframes for smooth number animation */
+@keyframes countAnimation {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 .welcome-container h1 {
@@ -62,18 +92,17 @@
     width: 100%;
     text-align: center;
     font-size: 1.0em;
-    opacity: 0.8;
+    color: white;
+    opacity: 0.7;
 }
 
 .footer p {
     margin: 0;
 }
-
-#footerright p {
+#footerright p{
     color: white;
+    font-size: 1.0em;
 }
-
-/* Media Queries for Responsiveness */
 @media (max-width: 768px) {
     .welcome-container h1 {
       font-size: 2.5em;
@@ -82,10 +111,6 @@
     .button-container button {
       padding: 10px 20px;
       font-size: 1.1em;
-    }
-    .logo{
-        width: 200px;
-        height: 100px;
     }
 }
 
@@ -100,6 +125,10 @@
     }
 
     .logo {
-      width: 120px; /* Smaller logo for mobile */
+      width: 120px;
+    }
+
+    .animated-count {
+      font-size: 3em;
     }
 }

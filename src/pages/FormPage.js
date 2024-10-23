@@ -101,7 +101,7 @@ const FormPage = () => {
           <h2>Form Submitted Successfully!</h2>
           <div className="checkmark">&#10004;</div>
           <p>Your details have been recorded.</p>
-          <p>Organizers will add you to the whatsapp group in 24-48 hr</p>
+          <p>Organizers will connect you soon on registration fee</p>
         </div>
       ) : (
         <>
