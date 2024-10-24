@@ -97,7 +97,6 @@
 
 
 
-
 import React, { useState, useEffect } from 'react';
 import { db } from './firebase'; // Import Firestore
 import { collection, getDocs, orderBy, query } from 'firebase/firestore'; // Firestore functions
@@ -105,18 +104,24 @@ import './ViewPage.css';
 
 const ViewPage = () => {
   const [users, setUsers] = useState([]);
+  const [filteredUsers, setFilteredUsers] = useState([]);
+  const [playerCount, setPlayerCount] = useState(0);
   const [password, setPassword] = useState('');
   const [authenticated, setAuthenticated] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [playerTypeFilter, setPlayerTypeFilter] = useState('all');
   
-  const correctPassword = 'kpl_12_2025';  // Replace with the correct password
+  const correctPassword = 'kpl_2025_secret';  // Replace with the correct password
 
   useEffect(() => {
     if (authenticated) {
       const fetchUsers = async () => {
         const q = query(collection(db, 'users'), orderBy('player_type', 'asc'));
         const querySnapshot = await getDocs(q);
-        const usersList = querySnapshot.docs.map(doc => doc.data());
+        const usersList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         setUsers(usersList);
+        setFilteredUsers(usersList); // Initially, show all users
+        setPlayerCount(usersList.length);
       };
       fetchUsers();
     }
@@ -134,6 +139,23 @@ const ViewPage = () => {
       alert('Incorrect password. Please try again.');
     }
   };
+
+  // Handle search and filtering logic
+  useEffect(() => {
+    let filtered = users;
+
+    // Filter by player type
+    if (playerTypeFilter !== 'all') {
+      filtered = filtered.filter(user => user.player_type === playerTypeFilter);
+    }
+
+    // Filter by search term (name)
+    if (searchTerm) {
+      filtered = filtered.filter(user => user.name.toLowerCase().includes(searchTerm.toLowerCase()));
+    }
+
+    setFilteredUsers(filtered);
+  }, [searchTerm, playerTypeFilter, users]);
 
   return (
     <div className="view-container">
@@ -153,9 +175,29 @@ const ViewPage = () => {
         </div>
       ) : (
         <>
+          <div className="top-bar">
+            <div className="player-count">
+              Total Players: {playerCount}
+            </div>
+
+            <div className="search-bar">
+              <input
+                type="text"
+                placeholder="Search by name"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              <select onChange={(e) => setPlayerTypeFilter(e.target.value)} value={playerTypeFilter}>
+                <option value="all">All</option>
+                <option value="Batsman">Batsman</option>
+                <option value="Bowler">Bowler</option>
+              </select>
+            </div>
+          </div>
+
           <h2>Players List</h2>
           <div className="card-list">
-            {users.map((user) => (
+            {filteredUsers.map((user) => (
               <div className="card" key={user.id}>
                 <img src={user.photo_url} alt="User" className="user-image" />
                 <div className="card-content">
@@ -173,8 +215,8 @@ const ViewPage = () => {
           </div>
         </>
       )}
-       {/* Footer section for copyright */}
-       <footer className="footer" id='footerview'>
+      {/* Footer section for copyright */}
+      <footer className="footer" id="footerview">
         <p>&copy; 2024 mpshetty. All rights reserved.</p>
       </footer>
     </div>

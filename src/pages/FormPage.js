@@ -216,12 +216,10 @@
 
 
 
-
-
 import React, { useState } from 'react';
 import { storage, db } from './firebase'; // Import Firebase storage and Firestore
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'; // Firebase storage functions
-import { collection, addDoc } from 'firebase/firestore'; // Firestore functions
+import { collection, addDoc, query, where, getDocs } from 'firebase/firestore'; // Firestore functions
 import './FormPage.css';
 
 const FormPage = () => {
@@ -244,6 +242,12 @@ const FormPage = () => {
     setFormData({ ...formData, photo: e.target.files[0] });
   };
 
+  const checkIfMobileNumberExists = async (mobileNumber) => {
+    const q = query(collection(db, 'users'), where('mobile_number', '==', mobileNumber));
+    const querySnapshot = await getDocs(q);
+    return !querySnapshot.empty; // Returns true if a user with the same mobile number exists
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -252,10 +256,17 @@ const FormPage = () => {
       return;
     }
 
-    const fileName = `${Date.now()}_${formData.photo.name}`; // Create a unique filename
-    const storageRef = ref(storage, `playerPhotos/${fileName}`);
-
     try {
+      // Check if the mobile number is already registered
+      const mobileNumberExists = await checkIfMobileNumberExists(formData.mobileNumber);
+      if (mobileNumberExists) {
+        alert('This mobile number is already registered. Please use a different number.');
+        return; // Stop form submission if the number is already registered
+      }
+
+      const fileName = `${Date.now()}_${formData.photo.name}`; // Create a unique filename
+      const storageRef = ref(storage, `playerPhotos/${fileName}`);
+
       // Upload photo to Firebase Storage
       await uploadBytes(storageRef, formData.photo);
 
