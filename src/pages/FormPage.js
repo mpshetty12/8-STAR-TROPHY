@@ -254,7 +254,7 @@ const FormPage = () => {
       const lastUser = querySnapshot.docs[0].data();
       return lastUser.fmcid + 1; // Increment the last fmcid
     } else {
-      return 20; // If no users, start at 20
+      return 31; // If no users, start at 20
     }
   };
 
@@ -297,6 +297,7 @@ const FormPage = () => {
         player_type: formData.playerType,
         fmcid: nextFmcid, // Use the next fmcid
         teamid:0,
+        payment:"",
       });
 
       setFormSubmitted(true);
