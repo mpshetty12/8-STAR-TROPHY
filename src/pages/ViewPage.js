@@ -95,11 +95,9 @@
 
 
 
-
-
 import React, { useState, useEffect } from 'react';
 import { db } from './firebase'; // Import Firestore
-import { collection, getDocs, orderBy, query } from 'firebase/firestore'; // Firestore functions
+import { collection, getDocs, orderBy, query, updateDoc, doc } from 'firebase/firestore'; // Firestore functions
 import './ViewPage.css';
 
 const ViewPage = () => {
@@ -110,13 +108,14 @@ const ViewPage = () => {
   const [authenticated, setAuthenticated] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [playerTypeFilter, setPlayerTypeFilter] = useState('all');
-  
-  const correctPassword = 'kpl_2025_secret';  // Replace with the correct password
+
+  const correctPassword = 'kpl_2025_secret'; // Replace with the correct password
+  const paymentPassword = 'pay_2024_password'; // Password to mark payment as "paid"
 
   useEffect(() => {
     if (authenticated) {
       const fetchUsers = async () => {
-        const q = query(collection(db, 'users'), orderBy('player_type', 'asc'));
+        const q = query(collection(db, 'users'), orderBy('payment', 'asc'));
         const querySnapshot = await getDocs(q);
         const usersList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         setUsers(usersList);
@@ -157,6 +156,24 @@ const ViewPage = () => {
     setFilteredUsers(filtered);
   }, [searchTerm, playerTypeFilter, users]);
 
+  // Handle payment status update
+  const handlePaymentUpdate = async (userId) => {
+    const enteredPassword = prompt('Enter payment password to confirm:');
+    if (enteredPassword === paymentPassword) {
+      const userDocRef = doc(db, 'users', userId);
+      await updateDoc(userDocRef, { payment: 'paid' });
+      // Update the local state
+      const updatedUsers = users.map(user => 
+        user.id === userId ? { ...user, payment: 'paid' } : user
+      );
+      setUsers(updatedUsers);
+      setFilteredUsers(updatedUsers); // Update filtered users
+      alert('Payment status updated to "paid".');
+    } else {
+      alert('Incorrect password. Payment status not updated.');
+    }
+  };
+
   return (
     <div className="view-container">
       {!authenticated ? (
@@ -191,6 +208,8 @@ const ViewPage = () => {
                 <option value="all">All</option>
                 <option value="Batsman">Batsman</option>
                 <option value="Bowler">Bowler</option>
+                <option value="Wicket Keeper">Wicket Keeper</option>
+                <option value="Allrounder">Allrounder</option>
               </select>
             </div>
           </div>
@@ -208,7 +227,16 @@ const ViewPage = () => {
                   <p><strong>Mobile:</strong> {user.mobile_number}</p>
                   <p><strong>Address:</strong> {user.address}</p>
                   <p><strong>Player Type:</strong> {user.player_type}</p>
-                  <p><strong>Payment Status:</strong> {user.payment}</p>
+                  <p><strong>Payment Status:</strong> {user.payment || 'Not Paid'}</p>
+                  {/* Show button only if payment status is empty or "not paid" */}
+                  {(!user.payment || user.payment.toLowerCase() === 'not paid') && (
+  <button
+    className="payment-button"
+    onClick={() => handlePaymentUpdate(user.id)}
+  >
+    Mark as Paid
+  </button>
+)}
                 </div>
               </div>
             ))}

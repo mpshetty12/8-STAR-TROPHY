@@ -215,11 +215,10 @@
 
 
 
-
 import React, { useState } from 'react';
 import { storage, db } from './firebase'; // Import Firebase storage and Firestore
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'; // Firebase storage functions
-import { collection, addDoc, query, where, getDocs } from 'firebase/firestore'; // Firestore functions
+import { collection, addDoc, query, where, getDocs, orderBy, limit } from 'firebase/firestore'; // Firestore functions
 import './FormPage.css';
 
 const FormPage = () => {
@@ -248,6 +247,17 @@ const FormPage = () => {
     return !querySnapshot.empty; // Returns true if a user with the same mobile number exists
   };
 
+  const getNextFmcid = async () => {
+    const q = query(collection(db, 'users'), orderBy('fmcid', 'desc'), limit(1)); // Query the highest fmcid
+    const querySnapshot = await getDocs(q);
+    if (!querySnapshot.empty) {
+      const lastUser = querySnapshot.docs[0].data();
+      return lastUser.fmcid + 1; // Increment the last fmcid
+    } else {
+      return 20; // If no users, start at 20
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -263,6 +273,9 @@ const FormPage = () => {
         alert('This mobile number is already registered. Please use a different number.');
         return; // Stop form submission if the number is already registered
       }
+
+      // Get the next available fmcid
+      const nextFmcid = await getNextFmcid();
 
       const fileName = `${Date.now()}_${formData.photo.name}`; // Create a unique filename
       const storageRef = ref(storage, `playerPhotos/${fileName}`);
@@ -282,6 +295,8 @@ const FormPage = () => {
         mobile_number: formData.mobileNumber,
         photo_url: photoUrl,
         player_type: formData.playerType,
+        fmcid: nextFmcid, // Use the next fmcid
+        teamid:0,
       });
 
       setFormSubmitted(true);
