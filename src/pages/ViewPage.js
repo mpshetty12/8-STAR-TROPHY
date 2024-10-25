@@ -94,11 +94,11 @@
 
 
 
-
 import React, { useState, useEffect } from 'react';
 import { db } from './firebase'; // Import Firestore
 import { collection, getDocs, orderBy, query, updateDoc, doc } from 'firebase/firestore'; // Firestore functions
 import './ViewPage.css';
+import { FaWhatsapp } from 'react-icons/fa'; // Import WhatsApp icon from FontAwesome or similar
 
 const ViewPage = () => {
   const [users, setUsers] = useState([]);
@@ -174,6 +174,11 @@ const ViewPage = () => {
     }
   };
 
+  // Function to create WhatsApp link
+  const createWhatsAppLink = (mobileNumber) => {
+    return `https://wa.me/${mobileNumber}`;
+  };
+
   return (
     <div className="view-container">
       {!authenticated ? (
@@ -228,15 +233,27 @@ const ViewPage = () => {
                   <p><strong>Address:</strong> {user.address}</p>
                   <p><strong>Player Type:</strong> {user.player_type}</p>
                   <p><strong>Payment Status:</strong> {user.payment || 'Not Paid'}</p>
-                  {/* Show button only if payment status is empty or "not paid" */}
+
+                  {/* Payment Button */}
                   {(!user.payment || user.payment.toLowerCase() === 'not paid') && (
-  <button
-    className="payment-button"
-    onClick={() => handlePaymentUpdate(user.id)}
-  >
-    Mark as Paid
-  </button>
-)}
+                    <button
+                      className="payment-button"
+                      onClick={() => handlePaymentUpdate(user.id)}
+                    >
+                      Mark as Paid
+                    </button>
+                  )}
+
+                  {/* WhatsApp Button */}
+                  <a
+                    href={createWhatsAppLink(user.mobile_number)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="whatsapp-button"
+                    title={`Message ${user.name} on WhatsApp`}
+                  >
+                    <FaWhatsapp style={{ color: 'green', fontSize: '24px' }} />
+                  </a>
                 </div>
               </div>
             ))}
