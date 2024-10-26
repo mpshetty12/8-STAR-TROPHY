@@ -49,7 +49,7 @@ const FormPage = () => {
   };
 
   const handlePaymentAttempt = () => {
-    const paymentLink = 'https://link.upilink.in/9353783521@ybl/1';
+    const paymentLink = 'https://link.upilink.in/frien97438859@barodampay/300';
     window.open(paymentLink, '_blank');
     setIsPaymentAttempted(true);  // Set to true after the first payment attempt
     alert("After completing the payment, please take a screenshot and upload it below.");
@@ -226,7 +226,6 @@ const FormPage = () => {
             ) : (
               <div>
                 <p>Please make the payment using the following UPI ID:</p>
-                <p><strong>frien97438859@barodampay</strong></p>
                 <button type="button" onClick={handlePaymentAttempt}>
                   Pay & Confirm
                 </button>
