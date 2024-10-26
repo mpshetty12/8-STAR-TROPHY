@@ -16,8 +16,8 @@ const FormPage = () => {
     playerType: '',
   });
   const [formSubmitted, setFormSubmitted] = useState(false);
-  const [isPaymentConfirmed, setIsPaymentConfirmed] = useState(false);
-  const [loading, setLoading] = useState(false);  // New state for loading
+  const [isPaymentAttempted, setIsPaymentAttempted] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -48,10 +48,11 @@ const FormPage = () => {
     }
   };
 
-  const handlePaymentConfirmation = () => {
-    const paymentLink = 'https://link.upilink.in/frien97438859@barodampay/300';
+  const handlePaymentAttempt = () => {
+    const paymentLink = 'https://link.upilink.in/9353783521@ybl/1';
     window.open(paymentLink, '_blank');
-    setIsPaymentConfirmed(true);
+    setIsPaymentAttempted(true);  // Set to true after the first payment attempt
+    alert("After completing the payment, please take a screenshot and upload it below.");
   };
 
   const handleSubmit = async (e) => {
@@ -62,7 +63,7 @@ const FormPage = () => {
       return;
     }
 
-    setLoading(true);  // Set loading state to true when submission starts
+    setLoading(true);
 
     try {
       const mobileNumberExists = await checkIfMobileNumberExists(formData.mobileNumber);
@@ -74,19 +75,16 @@ const FormPage = () => {
 
       const nextFmcid = await getNextFmcid();
 
-      // Upload profile photo
       const photoFileName = `${Date.now()}_${formData.photo.name}`;
       const photoStorageRef = ref(storage, `playerPhotos/${photoFileName}`);
       await uploadBytes(photoStorageRef, formData.photo);
       const photoUrl = await getDownloadURL(photoStorageRef);
 
-      // Upload payment screenshot
       const paymentFileName = `${Date.now()}_payment_${formData.paymentScreenshot.name}`;
       const paymentStorageRef = ref(storage, `paymentsPhoto/${paymentFileName}`);
       await uploadBytes(paymentStorageRef, formData.paymentScreenshot);
       const paymentPhotoUrl = await getDownloadURL(paymentStorageRef);
 
-      // Add data to Firestore
       await addDoc(collection(db, 'users'), {
         name: formData.name,
         shirt_size: formData.shirtSize,
@@ -98,16 +96,16 @@ const FormPage = () => {
         player_type: formData.playerType,
         fmcid: nextFmcid,
         teamid: 0,
-        payment: "paid",
+        payment: "Confirmed",
       });
 
       setFormSubmitted(true);
     } catch (error) {
       console.error('Error submitting form:', error);
       alert('An error occurred. Please try again.');
-      setLoading(false);  // Reset loading state if there's an error
+      setLoading(false);
     } finally {
-      setLoading(false);  // Ensure loading state is reset after submission
+      setLoading(false);
     }
   };
 
@@ -212,21 +210,28 @@ const FormPage = () => {
               <input type="file" id="photo" onChange={handleFileChange} required />
             </div>
 
-            {isPaymentConfirmed && (
-              <div className="input-group">
-                <label htmlFor="paymentScreenshot">Upload Payment Screenshot</label>
-                <input type="file" id="paymentScreenshot" onChange={handlePaymentScreenshotChange} required />
-              </div>
-            )}
-
-            {!isPaymentConfirmed ? (
-              <button type="button" onClick={handlePaymentConfirmation}>
-                Pay & Confirm
-              </button>
+            {isPaymentAttempted ? (
+              <>
+                <div>
+                  <p>Payment Completed? Please upload your payment screenshot below. If failed please pay 300 to upi : <strong>frien97438859@barodampay</strong> and take screenshot</p>
+                  <div className="input-group">
+                    <label htmlFor="paymentScreenshot">Upload Payment Screenshot</label>
+                    <input type="file" id="paymentScreenshot" onChange={handlePaymentScreenshotChange} required />
+                  </div>
+                  <button type="submit" disabled={loading}>
+                    {loading ? 'Submitting...' : 'Submit'}
+                  </button>
+                </div>
+              </>
             ) : (
-              <button type="submit" disabled={loading}>
-                {loading ? 'Submitting...' : 'Submit'}
-              </button>
+              <div>
+                <p>Please make the payment using the following UPI ID:</p>
+                <p><strong>frien97438859@barodampay</strong></p>
+                <button type="button" onClick={handlePaymentAttempt}>
+                  Pay & Confirm
+                </button>
+                <p>Once payment is completed, return here and new field will come to upload a screenshot.</p>
+              </div>
             )}
           </form>
         </>
