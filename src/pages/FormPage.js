@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { storage, db } from './firebase';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { collection, addDoc, query, where, getDocs, orderBy, limit } from 'firebase/firestore';
+import { storage, db } from './firebase'; // Import Firebase storage and Firestore
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'; // Firebase storage functions
+import { collection, addDoc, query, where, getDocs, orderBy, limit } from 'firebase/firestore'; // Firestore functions
 import './FormPage.css';
 
 const FormPage = () => {
@@ -12,12 +12,10 @@ const FormPage = () => {
     address: '',
     mobileNumber: '',
     photo: null,
-    paymentScreenshot: null,
     playerType: '',
   });
-  const [formSubmitted, setFormSubmitted] = useState(false);
-  const [isPaymentAttempted, setIsPaymentAttempted] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [formSubmitted, setFormSubmitted] = useState(false); // Track submission state
+  const [isSubmitting, setIsSubmitting] = useState(false); // Track if submit button should be disabled
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -27,64 +25,57 @@ const FormPage = () => {
     setFormData({ ...formData, photo: e.target.files[0] });
   };
 
-  const handlePaymentScreenshotChange = (e) => {
-    setFormData({ ...formData, paymentScreenshot: e.target.files[0] });
-  };
-
   const checkIfMobileNumberExists = async (mobileNumber) => {
     const q = query(collection(db, 'users'), where('mobile_number', '==', mobileNumber));
     const querySnapshot = await getDocs(q);
-    return !querySnapshot.empty;
+    return !querySnapshot.empty; // Returns true if a user with the same mobile number exists
   };
 
   const getNextFmcid = async () => {
-    const q = query(collection(db, 'users'), orderBy('fmcid', 'desc'), limit(1));
+    const q = query(collection(db, 'users'), orderBy('fmcid', 'desc'), limit(1)); // Query the highest fmcid
     const querySnapshot = await getDocs(q);
     if (!querySnapshot.empty) {
       const lastUser = querySnapshot.docs[0].data();
-      return lastUser.fmcid + 1;
+      return lastUser.fmcid + 1; // Increment the last fmcid
     } else {
-      return 31;
+      return 31; // If no users, start at 31
     }
-  };
-
-  const handlePaymentAttempt = () => {
-    const paymentLink = 'https://link.upilink.in/frien97438859@barodampay/300';
-    window.open(paymentLink, '_blank');
-    setIsPaymentAttempted(true);  // Set to true after the first payment attempt
-    alert("After completing the payment, please take a screenshot and upload it below.");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Block multiple submissions by disabling the submit button
+    setIsSubmitting(true);
 
-    if (!formData.photo || !formData.paymentScreenshot) {
-      alert('Please upload both a profile photo and a payment screenshot.');
+    if (!formData.photo) {
+      alert('Please select a photo to upload.');
+      setIsSubmitting(false); // Re-enable submit button on failure
       return;
     }
 
-    setLoading(true);
-
     try {
+      // Check if the mobile number is already registered
       const mobileNumberExists = await checkIfMobileNumberExists(formData.mobileNumber);
       if (mobileNumberExists) {
         alert('This mobile number is already registered. Please use a different number.');
-        setLoading(false);
-        return;
+        setIsSubmitting(false); // Re-enable submit button if already registered
+        return; // Stop form submission if the number is already registered
       }
 
+      // Get the next available fmcid
       const nextFmcid = await getNextFmcid();
 
-      const photoFileName = `${Date.now()}_${formData.photo.name}`;
-      const photoStorageRef = ref(storage, `playerPhotos/${photoFileName}`);
-      await uploadBytes(photoStorageRef, formData.photo);
-      const photoUrl = await getDownloadURL(photoStorageRef);
+      const fileName = `${Date.now()}_${formData.photo.name}`; // Create a unique filename
+      const storageRef = ref(storage, `playerPhotos/${fileName}`);
 
-      const paymentFileName = `${Date.now()}_payment_${formData.paymentScreenshot.name}`;
-      const paymentStorageRef = ref(storage, `paymentsPhoto/${paymentFileName}`);
-      await uploadBytes(paymentStorageRef, formData.paymentScreenshot);
-      const paymentPhotoUrl = await getDownloadURL(paymentStorageRef);
+      // Upload photo to Firebase Storage
+      await uploadBytes(storageRef, formData.photo);
 
+      // Get photo URL
+      const photoUrl = await getDownloadURL(storageRef);
+
+      // Insert form data into Firestore
       await addDoc(collection(db, 'users'), {
         name: formData.name,
         shirt_size: formData.shirtSize,
@@ -92,20 +83,17 @@ const FormPage = () => {
         address: formData.address,
         mobile_number: formData.mobileNumber,
         photo_url: photoUrl,
-        payment_photo_url: paymentPhotoUrl,
         player_type: formData.playerType,
-        fmcid: nextFmcid,
-        teamid: 0,
-        payment: "Confirmed",
+        fmcid: nextFmcid, // Use the next fmcid
+        teamid:0,
+        payment:"",
       });
 
       setFormSubmitted(true);
     } catch (error) {
       console.error('Error submitting form:', error);
       alert('An error occurred. Please try again.');
-      setLoading(false);
-    } finally {
-      setLoading(false);
+      setIsSubmitting(false); // Re-enable submit button on error
     }
   };
 
@@ -206,32 +194,11 @@ const FormPage = () => {
             </div>
 
             <div className="input-group">
-              <label htmlFor="photo">Upload Profile Photo</label>
+              <label htmlFor="photo">Upload Photo</label>
               <input type="file" id="photo" onChange={handleFileChange} required />
             </div>
 
-            {isPaymentAttempted ? (
-              <>
-                <div>
-                  <p>Payment Completed? Please upload your payment screenshot below. If failed please pay 300 to upi : <strong>frien97438859@barodampay</strong> and take screenshot</p>
-                  <div className="input-group">
-                    <label htmlFor="paymentScreenshot">Upload Payment Screenshot</label>
-                    <input type="file" id="paymentScreenshot" onChange={handlePaymentScreenshotChange} required />
-                  </div>
-                  <button type="submit" disabled={loading}>
-                    {loading ? 'Submitting...' : 'Submit'}
-                  </button>
-                </div>
-              </>
-            ) : (
-              <div>
-                <p>Please make the payment using the following UPI ID:</p>
-                <button type="button" onClick={handlePaymentAttempt}>
-                  Pay & Confirm
-                </button>
-                <p>Once payment is completed, return here and new field will come to upload a screenshot.</p>
-              </div>
-            )}
+            <button type="submit" disabled={isSubmitting}>Submit</button>
           </form>
         </>
       )}
