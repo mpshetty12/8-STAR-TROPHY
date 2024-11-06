@@ -33,6 +33,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import WelcomePage from './pages/WelcomePage';
 import FormPage from './pages/FormPage';
 import ViewPage from './pages/ViewPage';
+import TeamView from './pages/teamview';
 
 function App() {
   return (
@@ -41,6 +42,7 @@ function App() {
         <Route path="/" element={<WelcomePage />} />
         <Route path="/form" element={<FormPage />} />
         <Route path="/view" element={<ViewPage />} />
+        <Route path='/teamview' element={<TeamView />} />
       </Routes>
     </Router>
   );

@@ -88,12 +88,6 @@
 
 
 
-
-
-
-
-
-
 import React, { useState, useEffect } from 'react';
 import { db } from './firebase'; // Import Firestore
 import { collection, getDocs, orderBy, query, updateDoc, doc } from 'firebase/firestore'; // Firestore functions
@@ -118,9 +112,12 @@ const ViewPage = () => {
         const q = query(collection(db, 'users'), orderBy('payment', 'asc'));
         const querySnapshot = await getDocs(q);
         const usersList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        setUsers(usersList);
-        setFilteredUsers(usersList); // Initially, show all users
-        setPlayerCount(usersList.length);
+        
+        // Exclude "Captain" and "Icon Player" from the users list and count
+        const filteredUsersList = usersList.filter(user => user.player_type !== 'Captain' && user.player_type !== 'Icon Player');
+        setUsers(filteredUsersList);
+        setFilteredUsers(filteredUsersList); // Initially, show all filtered users
+        setPlayerCount(filteredUsersList.length); // Set count for the filtered list
       };
       fetchUsers();
     }
