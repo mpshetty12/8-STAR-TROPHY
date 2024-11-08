@@ -113,8 +113,8 @@ const ViewPage = () => {
         const querySnapshot = await getDocs(q);
         const usersList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         
-        // Exclude "Captain" and "Icon Player" from the users list and count
-        const filteredUsersList = usersList.filter(user => user.player_type !== 'Captain' && user.player_type !== 'Icon Player');
+        // Exclude "Owner", "Legend Player" and "Icon Player" from the users list and count
+        const filteredUsersList = usersList.filter(user => user.player_type !== 'Owner' && user.player_type !== 'Icon Player' && user.player_type !== 'Legend Player');
         setUsers(filteredUsersList);
         setFilteredUsers(filteredUsersList); // Initially, show all filtered users
         setPlayerCount(filteredUsersList.length); // Set count for the filtered list

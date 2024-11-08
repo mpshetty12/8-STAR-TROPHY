@@ -1,51 +1,165 @@
+/* Container styles */
 .teamview-container {
     padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
     font-family: Arial, sans-serif;
+    color: #333;
   }
   
-  .players-list {
+  /* Header */
+  .teamview-container h2 {
+    text-align: center;
+    font-size: 2em;
+    margin-bottom: 20px;
+    color: #4A90E2;
+  }
+  
+  /* Team select */
+  .team-select {
     display: flex;
-    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 30px;
+  }
+  
+  .team-select label {
+    margin-right: 10px;
+    font-weight: bold;
+  }
+  
+  .team-select select {
+    padding: 8px;
+    font-size: 1em;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  
+  /* Password form */
+  .password-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .password-container h2 {
+    margin-bottom: 10px;
+    color: #4A90E2;
+  }
+  
+  .password-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .password-container input,
+  .password-container button {
+    padding: 10px;
+    font-size: 1em;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+  
+  .password-container button {
+    background-color: #4A90E2;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .password-container button:hover {
+    background-color: #357ABD;
+  }
+  
+  /* Player list and card layout */
+  .players-list {
+    display: grid;
     gap: 20px;
   }
   
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+  }
+  
+  /* Player card */
   .player-card {
-    width: 200px;
+    width: 280px;
     border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 10px;
+    border-radius: 10px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     text-align: center;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    position: relative;
+    transition: transform 0.3s;
+  }
+  
+  .player-card:hover {
+    transform: translateY(-5px);
   }
   
   .player-image {
     width: 100%;
-    height: 150px;
-    object-fit: cover;
+    height: 180px;
     border-radius: 8px;
-    margin-bottom: 10px;
+    object-fit: cover;
+    margin-bottom: 15px;
   }
   
   .no-image {
-    width: 100%;
-    height: 150px;
-    background-color: #f0f0f0;
+    height: 180px;
+    background-color: #ddd;
     border-radius: 8px;
-    line-height: 150px;
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     color: #888;
   }
   
+  .player-card h3 {
+    margin-bottom: 10px;
+    color: #333;
+  }
+  
+  .player-card p {
+    margin: 5px 0;
+  }
+  
   .mark-paid-btn {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 8px 12px;
     background-color: #4CAF50;
     color: white;
     border: none;
-    padding: 8px 16px;
-    cursor: pointer;
     border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
   }
   
   .mark-paid-btn:hover {
     background-color: #45a049;
+  }
+  
+  /* Responsive styling */
+  @media (max-width: 768px) {
+    .row {
+      flex-direction: column;
+      align-items: center;
+    }
+  
+    .player-card {
+      width: 90%;
+    }
+  
+    .password-container form {
+      width: 100%;
+    }
   }
   

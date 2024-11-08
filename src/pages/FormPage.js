@@ -85,7 +85,7 @@ const FormPage = () => {
       const photoUrl = await getDownloadURL(storageRef);
 
       let aadharPhotoUrl = null;
-      if (formData.playerType === 'Icon Player' && formData.aadharPhoto) {
+      if (formData.playerType === 'Legend Player' && formData.aadharPhoto) {
         const aadharFileName = `${Date.now()}_${formData.aadharPhoto.name}`;
         const aadharStorageRef = ref(storage, `aadharPhotos/${aadharFileName}`);
         await uploadBytes(aadharStorageRef, formData.aadharPhoto);
@@ -104,7 +104,7 @@ const FormPage = () => {
         fmcid: nextFmcid,
         teamid: formData.team,
         payment: '',
-        ...(formData.playerType === 'Icon Player' && {
+        ...(formData.playerType === 'Legend Player' && {
           aadhar_number: formData.aadharNumber,
           aadhar_photo_url: aadharPhotoUrl,
         }),
@@ -133,7 +133,8 @@ const FormPage = () => {
     <div className="form-container">
       {formSubmitted ? (
         <div className="success-message">
-          <h2>Form Submitted Successfully!</h2>
+          <h2>Form Submitted Successfully! please join below whatsapp group</h2>
+          <h3>https://chat.whatsapp.com/HBkDo5xbMyIKRjHBLOMTbN</h3>
           <div className="checkmark">&#10004;</div>
           <p>Your details have been recorded.</p>
         </div>
@@ -182,12 +183,13 @@ const FormPage = () => {
                 <option value="Bowler">Bowler</option>
                 <option value="Wicket Keeper">Wicket Keeper</option>
                 <option value="Allrounder">Allrounder</option>
-                <option value="Captain">Captain</option>
-                <option value="Icon Player">Icon Player</option>
+                <option value="Owner">Owner (ನೊಂದಾಯಿಸಿದ ತಂಡದವರಿಗೆ ಮಾತ್ರ)</option>
+                <option value="Icon Player">Icon Player (ನೊಂದಾಯಿಸಿದ ತಂಡದವರಿಗೆ ಮಾತ್ರ)</option>
+                <option value="Legend Player">Legend Player (ನೊಂದಾಯಿಸಿದ ತಂಡದವರಿಗೆ ಮಾತ್ರ)</option>
               </select>
             </div>
 
-            {formData.playerType === 'Icon Player' && (
+            {formData.playerType === 'Legend Player' && (
               <>
                 <div className="input-group">
                   <label htmlFor="aadharNumber">Aadhar Number</label>
@@ -198,30 +200,19 @@ const FormPage = () => {
                   <label htmlFor="aadharPhoto">Upload Aadhar Photo</label>
                   <input type="file" id="aadharPhoto" name="aadharPhoto" onChange={handleFileChange} required />
                 </div>
-
-                <div className="input-group">
-                    <label htmlFor="team">Select Team</label>
-                    <select id="team" name="team" onChange={handleChange} required>
-                        <option value="">Select Team</option>
-                        {teams.map((team) => (
-                        <option key={team.team_id} value={team.team_id}>{team.team_name}</option>
-                        ))}
-                    </select>
-                </div>
               </>
             )}
-            {formData.playerType === 'Captain' && (
-              <>
-                <div className="input-group">
-                    <label htmlFor="team">Select Team</label>
-                    <select id="team" name="team" onChange={handleChange} required>
-                        <option value="">Select Team</option>
-                        {teams.map((team) => (
-                        <option key={team.team_id} value={team.team_id}>{team.team_name}</option>
-                        ))}
-                    </select>
-                </div>
-              </>
+
+            {(formData.playerType === 'Owner' || formData.playerType === 'Icon Player') && (
+              <div className="input-group">
+                <label htmlFor="team">Select Team</label>
+                <select id="team" name="team" onChange={handleChange} required>
+                  <option value="">Select Team</option>
+                  {teams.map((team) => (
+                    <option key={team.team_id} value={team.team_id}>{team.team_name}</option>
+                  ))}
+                </select>
+              </div>
             )}
 
             <div className="input-group">

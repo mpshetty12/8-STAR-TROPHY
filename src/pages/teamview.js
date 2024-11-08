@@ -7,15 +7,13 @@ const TeamView = () => {
   const [teams, setTeams] = useState([]);
   const [selectedTeam, setSelectedTeam] = useState('');
   const [players, setPlayers] = useState([]);
-  const [password, setPassword] = useState(''); // State for password input
-  const [isPasswordCorrect, setIsPasswordCorrect] = useState(false); // State to track password validation
+  const [password, setPassword] = useState('');
+  const [isPasswordCorrect, setIsPasswordCorrect] = useState(false);
 
-  // Predefined password for validation
-  const predefinedPassword = 'kpl_2025_teamsecret'; // Set your password here
+  const predefinedPassword = 'kpl_2025_teamsecret';
 
   useEffect(() => {
     if (isPasswordCorrect) {
-      // Fetch all teams if password is correct
       const fetchTeams = async () => {
         const teamCollection = collection(db, 'teams');
         const teamSnapshot = await getDocs(teamCollection);
@@ -45,6 +43,11 @@ const TeamView = () => {
     const teamId = e.target.value;
     setSelectedTeam(teamId);
 
+    if (!teamId) {
+      setPlayers([]); // Clear players if no team is selected
+      return;
+    }
+
     const selected = teams.find((team) => team.team_id === Number(teamId));
     if (selected && selected.players.length > 0) {
       const userQuery = query(
@@ -70,68 +73,88 @@ const TeamView = () => {
     }
   };
 
-  if (!isPasswordCorrect) {
-    return (
-      <div className="password-container">
-        <h2>Enter Password to Access Team View</h2>
-        <form onSubmit={handlePasswordSubmit}>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Enter password"
-            required
-          />
-          <button type="submit">Submit</button>
-        </form>
-      </div>
-    );
-  }
+  const renderPlayerCard = (player, placeholderText) => (
+    <div className="player-card" key={player ? player.fmcid : placeholderText}>
+      {player ? (
+        <>
+          {player.photo_url ? (
+            <img src={player.photo_url} alt={player.name} className="player-image" />
+          ) : (
+            <div className="no-image">No Image</div>
+          )}
+          <h3>{player.name}</h3>
+          <p><strong>FMC ID:</strong> FMC{player.fmcid}</p>
+          <p><strong>Shirt Size:</strong> {player.shirt_size}</p>
+          <p><strong>Jersey Number:</strong> {player.jersey_number}</p>
+          <p><strong>Mobile:</strong> {player.mobile_number}</p>
+          <p><strong>Address:</strong> {player.address}</p>
+          <p><strong>Player Type:</strong> {player.player_type}</p>
+          <p><strong>Payment Status:</strong> {player.payment || 'Not Paid'}</p>
+          {player.payment !== 'Paid' && (
+            <button onClick={() => markAsPaid(player.id)} className="mark-paid-btn">
+              Mark as Paid
+            </button>
+          )}
+        </>
+      ) : (
+        <div className="placeholder-text">{placeholderText}</div>
+      )}
+    </div>
+  );
 
   return (
     <div className="teamview-container">
       <h2>Team View</h2>
-      <div className="team-select">
-        <label htmlFor="team">Select Team:</label>
-        <select id="team" value={selectedTeam} onChange={handleTeamChange}>
-          <option value="">Choose a team</option>
-          {teams.map((team) => (
-            <option key={team.team_id} value={team.team_id}>
-              {team.team_name}
-            </option>
-          ))}
-        </select>
-      </div>
 
-      <div className="players-list">
-        {players.length > 0 ? (
-          players.map((player) => (
-            <div className="player-card" key={player.fmcid}>
-              {/* Display player image */}
-              {player.photo_url ? (
-                <img src={player.photo_url} alt={player.name} className="player-image" />
+      {!isPasswordCorrect && (
+        <div className="password-container">
+          <h2>Enter Password to Access Team View</h2>
+          <form onSubmit={handlePasswordSubmit}>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter password"
+              required
+            />
+            <button type="submit">Submit</button>
+          </form>
+        </div>
+      )}
+
+      {isPasswordCorrect && (
+        <>
+          <div className="team-select">
+            <label htmlFor="team">Select Team:</label>
+            <select id="team" value={selectedTeam} onChange={handleTeamChange}>
+              <option value="">Choose a team</option>
+              {teams.length > 0 ? (
+                teams.map((team) => (
+                  <option key={team.team_id} value={team.team_id}>
+                    {team.team_name}
+                  </option>
+                ))
               ) : (
-                <div className="no-image">No Image</div>
+                <option>Loading teams...</option>
               )}
-              <h3>{player.name}</h3>
-              <p><strong>FMC ID:</strong> FMC{player.fmcid}</p>
-              <p><strong>Shirt Size:</strong> {player.shirt_size}</p>
-              <p><strong>Jersey Number:</strong> {player.jersey_number}</p>
-              <p><strong>Mobile:</strong> {player.mobile_number}</p>
-              <p><strong>Address:</strong> {player.address}</p>
-              <p><strong>Player Type:</strong> {player.player_type}</p>
-              <p><strong>Payment Status:</strong> {player.payment || 'Not Paid'}</p>
-              {player.payment !== 'Paid' && (
-                <button onClick={() => markAsPaid(player.id)} className="mark-paid-btn">
-                  Mark as Paid
-                </button>
-              )}
+            </select>
+          </div>
+
+          {selectedTeam ? (
+            <div className="players-list">
+              {Array.from({ length: 9 }).map((_, index) => {
+                const player = players[index];
+                const placeholderText = `Player ${index + 1} - ${
+                  index < players.length ? '' : 'Not yet registered'
+                }`;
+                return renderPlayerCard(player, placeholderText);
+              })}
             </div>
-          ))
-        ) : (
-          <p className="no-players-message">No players found for this team.</p>
-        )}
-      </div>
+          ) : (
+            <p className="no-team-selected">Please select a team to view players.</p>
+          )}
+        </>
+      )}
     </div>
   );
 };
