@@ -203,7 +203,7 @@ const FormPage = () => {
               </>
             )}
 
-            {(formData.playerType === 'Owner' || formData.playerType === 'Icon Player') && (
+            {(formData.playerType === 'Owner' || formData.playerType === 'Icon Player' || formData.playerType === 'Legend Player') && (
               <div className="input-group">
                 <label htmlFor="team">Select Team</label>
                 <select id="team" name="team" onChange={handleChange} required>
