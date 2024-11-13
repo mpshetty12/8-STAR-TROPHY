@@ -90,11 +90,6 @@ const TeamView = () => {
           <p><strong>Address:</strong> {player.address}</p>
           <p><strong>Player Type:</strong> {player.player_type}</p>
           <p><strong>Payment Status:</strong> {player.payment || 'Not Paid'}</p>
-          {player.payment !== 'Paid' && (
-            <button onClick={() => markAsPaid(player.id)} className="mark-paid-btn">
-              Mark as Paid
-            </button>
-          )}
         </>
       ) : (
         <div className="placeholder-text">{placeholderText}</div>
