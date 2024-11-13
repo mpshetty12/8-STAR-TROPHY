@@ -6,7 +6,7 @@ import ViewPage from './pages/ViewPage';
 import TeamView from './pages/teamview';
 import BiddingPage from './pages/BiddingPage_temp';
 import Admin from './pages/Admin';
-import LoginPage from './pages/Loginpage';
+import LoginPage from './pages/Logipppage';
 
 function App() {
   return (
