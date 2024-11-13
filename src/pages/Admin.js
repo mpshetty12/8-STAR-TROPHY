@@ -141,19 +141,27 @@ const Admin = () => {
     const nextPlayer = async () => {
         const currentBidRef = doc(db, "bids", "currentBid");
         setTimer(60); // Reset timer to 60 seconds
-        let nextFmcid = currentFmcid + 1;
-
-        while (nextFmcid <= players[players.length - 1]?.fmcid) {
-            const nextPlayer = players.find((player) => player.fmcid === nextFmcid);
-
+    
+        if (!players || players.length === 0) {
+            alert("No players available.");
+            return;
+        }
+    
+        const remainingFmcids = players
+            .map((player) => player.fmcid)
+            .filter((fmcid) => fmcid > currentFmcid);
+    
+        for (const fmcid of remainingFmcids) {
+            const nextPlayer = players.find((player) => player.fmcid === fmcid);
+    
             if (nextPlayer) {
                 setCurrentPlayer(nextPlayer);
-                setCurrentFmcid(nextFmcid);
-
+                setCurrentFmcid(fmcid);
+    
                 const playerData = {
                     playerId: nextPlayer.id || "",
                     playerName: nextPlayer.name || "Unknown Player",
-                    playerFmcid: nextPlayer.fmcid || "Unknown Position",
+                    playerFmcid: fmcid,
                     playerJerseynumber: nextPlayer.jersey_number || "Unknown Team",
                     playerShirtsize: nextPlayer.shirt_size || "Unknown Player",
                     playerMobilenumber: nextPlayer.mobile_number || "Unknown Position",
@@ -167,16 +175,20 @@ const Admin = () => {
                     winningBid: 0,
                     time: 60,
                 };
-
-                await setDoc(currentBidRef, playerData);
-
+    
+                try {
+                    await setDoc(currentBidRef, playerData);
+                } catch (error) {
+                    console.error("Failed to update current bid:", error);
+                }
                 return;
             }
-            nextFmcid += 1;
         }
-
+    
         alert("No more players available.");
     };
+    
+    
 
     return (
         <div className="admin-container">

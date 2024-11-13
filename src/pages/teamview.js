@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { db } from './firebase';
-import { collection, getDocs, query, where, doc, updateDoc } from 'firebase/firestore';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 import './teamview.css';
 
 const TeamView = () => {
@@ -58,18 +58,6 @@ const TeamView = () => {
       setPlayers(userSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
     } else {
       setPlayers([]);
-    }
-  };
-
-  const markAsPaid = async (playerId) => {
-    try {
-      const playerDocRef = doc(db, 'users', playerId);
-      await updateDoc(playerDocRef, { payment: 'Paid' });
-      setPlayers(players.map((player) =>
-        player.id === playerId ? { ...player, payment: 'Paid' } : player
-      ));
-    } catch (error) {
-      console.error('Error updating payment status:', error);
     }
   };
 
