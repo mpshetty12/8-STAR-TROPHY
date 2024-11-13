@@ -4,9 +4,9 @@ import WelcomePage from './pages/WelcomePage';
 import FormPage from './pages/FormPage';
 import ViewPage from './pages/ViewPage';
 import TeamView from './pages/teamview';
-import BiddingPage from './pages/BiddingPage';
+import BiddingPage from './pages/BiddingPage_temp';
 import Admin from './pages/Admin';
-import LoginPage from './pages/LoginPage';
+import LoginPage from './pages/Loginpage';
 
 function App() {
   return (
