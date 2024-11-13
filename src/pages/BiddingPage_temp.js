@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { db } from "./firebase";
 import { doc, onSnapshot, getDoc, updateDoc } from "firebase/firestore";
-import "./BiddingPage.css";
+import "./bidc.css";
 
 const BiddingPage = () => {
     const [currentPlayer, setCurrentPlayer] = useState(null);
