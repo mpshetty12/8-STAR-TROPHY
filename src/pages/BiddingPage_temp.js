@@ -14,6 +14,7 @@ const BiddingPage = () => {
     const [winningTeam, setWinningTeam] = useState(null); // Store the winning team ID
     const [winningBid, setWinningBid] = useState(null); // Store the winning bid amount
     const [timer, setTimer] = useState(0); // Initial timer value
+    const [playerCount, setPlayerCount] = useState(0); // Track the number of players for the team
     const teamId = sessionStorage.getItem("teamId");
 
     const timerRef = useRef(null); // Reference to store the timer interval
@@ -54,12 +55,13 @@ const BiddingPage = () => {
     }, [currentPlayer]); // Reset timer every time `currentPlayer` changes
 
     useEffect(() => {
-        // Fetch the current team document to get the maxBidPoint
+        // Fetch the current team document to get the maxBidPoint and players count
         const teamRef = doc(db, "teams", teamId);
         const unsubscribeTeam = onSnapshot(teamRef, (teamSnapshot) => {
             if (teamSnapshot.exists()) {
                 const teamData = teamSnapshot.data();
                 setMaxBidPoint(teamData.maxbidpoint || 100); // Update maxBidPoint from Firestore, default to 100 if missing
+                setPlayerCount(teamData.players.length || 0); // Update player count
             }
         });
 
@@ -145,7 +147,11 @@ const BiddingPage = () => {
                             <p>Bidding closed for this player.</p>
                         </div>
                     ) : (
-                        <button className="buy-button" onClick={handleBuyClick} disabled={!canBid || timer === 0}>
+                        <button
+                            className="buy-button"
+                            onClick={handleBuyClick}
+                            disabled={!canBid || timer === 0 || playerCount >= 10}
+                        >
                             Buy
                         </button>
                     )}

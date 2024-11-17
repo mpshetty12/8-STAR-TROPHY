@@ -1,4 +1,32 @@
-/* Container styles */
+Container styles
+/* Team View Styles */
+.teamview-container {
+  background: linear-gradient(to bottom right, #2b5876, #4e4376);
+  color: white;
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  min-height: 100vh;
+}
+
+/* Header */
+.header {
+  text-align: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.header h1 {
+  font-size: 36px;
+  color: #ffcc00;
+  text-shadow: 2px 2px 4px #000;
+}
+
+.header p {
+  font-size: 18px;
+  color: white;
+}
 .teamview-container {
     padding: 20px;
     max-width: 1200px;

@@ -16,7 +16,7 @@ const Admin = () => {
     const [players, setPlayers] = useState([]);
     const [currentPlayer, setCurrentPlayer] = useState(null);
     const [currentFmcid, setCurrentFmcid] = useState(0);
-    const [timer, setTimer] = useState(60); // Initial timer value
+    const [timer, setTimer] = useState(0);
     const [currentBidData, setCurrentBidData] = useState({
         team_id: "N/A",
         playercurrentbidpoint: 0,
@@ -24,11 +24,14 @@ const Admin = () => {
         winner: "N/A",
         winningBid: 0,
     });
+    const [teamName, setTeamName] = useState("N/A");
+    const [showWinnerScreen, setShowWinnerScreen] = useState(false);
+    const [showMaxBidPoints, setShowMaxBidPoints] = useState(false); // State for showing max bid points in-page
+    const [teamsMaxBidPoints, setTeamsMaxBidPoints] = useState([]); // State to store teams' max bid points
 
-    const timerRef = useRef(null); // Reference to store the timer interval
+    const timerRef = useRef(null);
 
     useEffect(() => {
-        // Clear previous interval and start a new one when timer resets
         if (timerRef.current) clearInterval(timerRef.current);
 
         timerRef.current = setInterval(() => {
@@ -47,9 +50,111 @@ const Admin = () => {
             });
         }, 1000);
 
-        // Clean up interval on component unmount
         return () => clearInterval(timerRef.current);
-    }, [currentPlayer]); // Reset timer every time `currentPlayer` changes
+    }, [currentPlayer]);
+
+    useEffect(() => {
+        if (currentBidData.team_id !== "N/A") {
+            const fetchTeamName = async () => {
+                const teamRef = doc(db, "teams", currentBidData.team_id);
+                const teamSnapshot = await getDoc(teamRef);
+                if (teamSnapshot.exists()) {
+                    setTeamName(teamSnapshot.data().team_name || "Unknown Team");
+                } else {
+                    setTeamName("N/A");
+                }
+            };
+            fetchTeamName();
+        }
+    }, [currentBidData.team_id]);
+
+    useEffect(() => {
+        const fetchPlayers = async () => {
+            const playerSnapshot = await getDocs(collection(db, "users"));
+            const fetchedPlayers = playerSnapshot.docs
+                .map((doc) => ({ id: doc.id, ...doc.data() }))
+                .filter(
+                    (player) =>
+                        player.isBidded !== true &&
+                        !["Owner", "Icon Player", "Legend Player"].includes(
+                            player.player_type
+                        )
+                )
+                .sort((a, b) => a.fmcid - b.fmcid);
+            setPlayers(fetchedPlayers);
+        };
+        fetchPlayers();
+
+        const unsubscribe = onSnapshot(doc(db, "bids", "currentBid"), (docSnapshot) => {
+            if (docSnapshot.exists()) {
+                const bidData = docSnapshot.data();
+                setCurrentBidData({
+                    team_id: bidData.team_id || "N/A",
+                    playercurrentbidpoint: bidData.playercurrentbidpoint || 0,
+                    isClosed: bidData.isClosed || false,
+                    winner: bidData.winner || "N/A",
+                    winningBid: bidData.winningBid || 0,
+                });
+                if (bidData.time) {
+                    setTimer(bidData.time);
+                }
+            }
+        });
+
+        return () => unsubscribe();
+    }, []);
+
+    const nextPlayer = async () => {
+        setShowWinnerScreen(false); // Hide winner screen on the next player
+        setShowMaxBidPoints(false); // Hide max bid points on next player
+        const currentBidRef = doc(db, "bids", "currentBid");
+        setTimer(60);
+
+        if (!players || players.length === 0) {
+            alert("No players available.");
+            return;
+        }
+
+        const remainingFmcids = players
+            .map((player) => player.fmcid)
+            .filter((fmcid) => fmcid > currentFmcid);
+
+        for (const fmcid of remainingFmcids) {
+            const nextPlayer = players.find((player) => player.fmcid === fmcid);
+
+            if (nextPlayer) {
+                setCurrentPlayer(nextPlayer);
+                setCurrentFmcid(fmcid);
+
+                const playerData = {
+                    playerId: nextPlayer.id || "",
+                    playerName: nextPlayer.name || "Unknown Player",
+                    playerFmcid: fmcid,
+                    playerJerseynumber: nextPlayer.jersey_number || "Unknown Team",
+                    playerShirtsize: nextPlayer.shirt_size || "Unknown Player",
+                    playerMobilenumber: nextPlayer.mobile_number || "Unknown Position",
+                    playerType: nextPlayer.player_type || "Unknown Team",
+                    playerPayment: nextPlayer.payment || "Unknown Team",
+                    playerAddress: nextPlayer.address || "Unknown Team",
+                    Playerphotourl: nextPlayer.photo_url || "https://via.placeholder.com/150",
+                    playercurrentbidpoint: 0,
+                    isClosed: false,
+                    winner: "N/A",
+                    winningBid: 0,
+                    time: 0,
+                };
+
+                try {
+                    await setDoc(currentBidRef, playerData);
+                } catch (error) {
+                    console.error("Failed to update current bid:", error);
+                }
+                return;
+            }
+        }
+
+        alert("No more players available.");
+    };
 
     const closeBid = async () => {
         const { team_id, playercurrentbidpoint } = currentBidData;
@@ -88,11 +193,12 @@ const Admin = () => {
                     winningBid: playercurrentbidpoint,
                 });
 
+                // Show the winner screen after closing the bid
+                setShowWinnerScreen(true);
+
                 alert(
                     `Bid closed for player ${currentPlayer.name}, assigned to team ${team_id}, and ${playercurrentbidpoint} deducted from team's max bid points.`
                 );
-
-                setCurrentPlayer(null); // Reset current player after closing bid
             } else {
                 alert("Team not found.");
             }
@@ -102,139 +208,95 @@ const Admin = () => {
         }
     };
 
-    useEffect(() => {
-        const fetchPlayers = async () => {
-            const playerSnapshot = await getDocs(collection(db, "users"));
-            const fetchedPlayers = playerSnapshot.docs
-                .map((doc) => ({ id: doc.id, ...doc.data() }))
-                .filter(
-                    (player) =>
-                        player.isBidded !== true &&
-                        !["Owner", "Icon Player", "Legend Player"].includes(
-                            player.player_type
-                        )
-                )
-                .sort((a, b) => a.fmcid - b.fmcid);
-            setPlayers(fetchedPlayers);
-        };
-        fetchPlayers();
+    const viewMaxBidPoints = async () => {
+        try {
+            const teamsSnapshot = await getDocs(collection(db, "teams"));
+            const teamMaxBidPoints = teamsSnapshot.docs.map((doc) => ({
+                teamName: doc.data().team_name,
+                maxBidPoint: doc.data().maxbidpoint,
+            }));
 
-        const unsubscribe = onSnapshot(doc(db, "bids", "currentBid"), (docSnapshot) => {
-            if (docSnapshot.exists()) {
-                const bidData = docSnapshot.data();
-                setCurrentBidData({
-                    team_id: bidData.team_id || "N/A",
-                    playercurrentbidpoint: bidData.playercurrentbidpoint || 0,
-                    isClosed: bidData.isClosed || false,
-                    winner: bidData.winner || "N/A",
-                    winningBid: bidData.winningBid || 0,
-                });
-                if (bidData.time) {
-                    setTimer(bidData.time); // Update timer from Firestore
-                }
-            }
-        });
-
-        return () => unsubscribe();
-    }, []);
-
-    const nextPlayer = async () => {
-        const currentBidRef = doc(db, "bids", "currentBid");
-        setTimer(60); // Reset timer to 60 seconds
-    
-        if (!players || players.length === 0) {
-            alert("No players available.");
-            return;
+            setTeamsMaxBidPoints(teamMaxBidPoints); // Store the max bid points in state
+            setShowMaxBidPoints(true); // Show the max bid points section
+        } catch (error) {
+            console.error("Error fetching teams' max bid points:", error);
+            alert("Failed to fetch teams' max bid points.");
         }
-    
-        const remainingFmcids = players
-            .map((player) => player.fmcid)
-            .filter((fmcid) => fmcid > currentFmcid);
-    
-        for (const fmcid of remainingFmcids) {
-            const nextPlayer = players.find((player) => player.fmcid === fmcid);
-    
-            if (nextPlayer) {
-                setCurrentPlayer(nextPlayer);
-                setCurrentFmcid(fmcid);
-    
-                const playerData = {
-                    playerId: nextPlayer.id || "",
-                    playerName: nextPlayer.name || "Unknown Player",
-                    playerFmcid: fmcid,
-                    playerJerseynumber: nextPlayer.jersey_number || "Unknown Team",
-                    playerShirtsize: nextPlayer.shirt_size || "Unknown Player",
-                    playerMobilenumber: nextPlayer.mobile_number || "Unknown Position",
-                    playerType: nextPlayer.player_type || "Unknown Team",
-                    playerPayment: nextPlayer.payment || "Unknown Team",
-                    playerAddress: nextPlayer.address || "Unknown Team",
-                    Playerphotourl: nextPlayer.photo_url || "https://via.placeholder.com/150",
-                    playercurrentbidpoint: 0,
-                    isClosed: false,
-                    winner: "N/A",
-                    winningBid: 0,
-                    time: 60,
-                };
-    
-                try {
-                    await setDoc(currentBidRef, playerData);
-                } catch (error) {
-                    console.error("Failed to update current bid:", error);
-                }
-                return;
-            }
-        }
-    
-        alert("No more players available.");
     };
-    
-    
 
     return (
         <div className="admin-container">
-            <h2>Admin Panel</h2>
-
-            <div className="current-bid-info">
-                <p><strong>Current Bidding Team ID:</strong> {currentBidData.team_id}</p>
-                <p><strong>Current Bid Point:</strong> {currentBidData.playercurrentbidpoint}</p>
-                <p><strong>Bid Status:</strong> {currentBidData.isClosed ? "Closed" : "Open"}</p>
-                {currentBidData.isClosed && (
-                    <>
-                        <p><strong>Winning Team:</strong> {currentBidData.winner}</p>
-                        <p><strong>Winning Bid:</strong> {currentBidData.winningBid}</p>
-                    </>
-                )}
-                <p><strong>Time remaining:</strong> {timer} seconds</p>
-            </div>
-
-            <button className="next-player-btn" onClick={nextPlayer}>
-                Next Player
-            </button>
-
-            <button className="close-bid-btn" onClick={closeBid} disabled={!currentPlayer || currentBidData.isClosed}>
-                Close Bid
-            </button>
-
-            {currentPlayer ? (
-                <div className="player-card">
-                    <img
-                        src={currentPlayer.photo_url || "https://via.placeholder.com/150"}
-                        alt={currentPlayer.name}
-                        className="player-image"
-                    />
-                    <div className="player-details">
-                        <h3>{currentPlayer.name}</h3>
-                        <h4>Time remaining <strong>{timer}</strong> seconds</h4>
-                        <p><strong>Player ID:</strong> {currentPlayer.fmcid}</p>
-                        <p><strong>Mobile number:</strong> {currentPlayer.mobile_number}</p>
-                        <p><strong>Address:</strong> {currentPlayer.address}</p>
-                        <p><strong>Jersey No :</strong> {currentPlayer.jersey_number}</p>
-                        <p><strong>Shirt Size:</strong> {currentPlayer.shirt_size}</p>
-                        <p><strong>Player Type:</strong> {currentPlayer.player_type}</p>
+            {showWinnerScreen ? (
+                <div className="winner-screen">
+                    <h1>Winner: {teamName}</h1>
+                    <h2>Winning Bid: {currentBidData.winningBid}</h2>
+                    <div className="winner-actions">
+                        <button onClick={nextPlayer} className="next-player-btn">
+                            Next FMCID
+                        </button>
+                        <button onClick={viewMaxBidPoints} className="view-max-bidpoints-btn">
+                            View All Teams' Max Bid Points
+                        </button>
                     </div>
+
+                    {showMaxBidPoints && (
+                        <div className="max-bid-points">
+                            <h3>All Teams' Max Bid Points:</h3>
+                            <ul>
+                                {teamsMaxBidPoints.map((team, index) => (
+                                    <li key={index}>
+                                        {team.teamName}: {team.maxBidPoint}
+                                    </li>
+                                ))}
+                            </ul>
+                            <button onClick={nextPlayer} className="next-player-btn">
+                                Next FMCID
+                            </button>
+                        </div>
+                    )}
                 </div>
             ) : (
-                <p>Waiting for the admin to select a player for bidding...</p>
+                <>
+                    <div className="timer-container">
+                        <div
+                            className={`timer-circle ${timer <= 10 ? "blinking-red" : ""}`}
+                        >
+                            {timer}
+                        </div>
+                    </div>
+
+                    <div className="bid-info">
+                        <h3 className="left-align">Team Name: {teamName}</h3>
+                        <h3 className="right-align">Bid Points: {currentBidData.playercurrentbidpoint}</h3>
+                    </div>
+
+                    {currentPlayer ? (
+                        <div className="player-info">
+                            <img
+                                src={currentPlayer.photo_url || "https://via.placeholder.com/150"}
+                                alt={currentPlayer.name}
+                                className="player-image"
+                            />
+                            <h3>{currentPlayer.name}</h3>
+                            <p><strong>FMCID:</strong> {currentPlayer.fmcid}</p>
+                        </div>
+                    ) : (
+                        <p>Waiting for the admin to select a player...</p>
+                    )}
+
+                    <div className="action-buttons">
+                        <button className="next-player-btn" onClick={nextPlayer}>
+                            Next Player
+                        </button>
+                        <button
+                            className="close-bid-btn"
+                            onClick={closeBid}
+                            disabled={!currentPlayer || currentBidData.isClosed}
+                        >
+                            Close Bid
+                        </button>
+                    </div>
+                </>
             )}
         </div>
     );
