@@ -34,6 +34,7 @@ const WelcomePage = () => {
         <button onClick={() => navigate('/view')}>Player Lists</button>
         <button onClick={() => navigate('/teamview')}>Team View</button>
         <button onClick={() => navigate('/login')}>Bidding</button> {/* New button for Bidding */}
+        <button onClick={() => navigate('/admin12345678980')}>Bidd start</button> {/* New button for Bidding */}
       </div>
 
       {/* Footer */}
