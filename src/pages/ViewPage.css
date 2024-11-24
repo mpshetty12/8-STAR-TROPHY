@@ -88,7 +88,7 @@ h2 {
 .user-image {
     width: 100%;
     height: 250px;
-    object-fit: cover; /* Image scales while maintaining aspect ratio */
+    object-fit:fill; /* Image scales while maintaining aspect ratio */
     border-bottom: 2px solid #007bff;
 }
 
@@ -171,3 +171,27 @@ p {
         height: 200px; /* Adjust image height for mobile view */
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

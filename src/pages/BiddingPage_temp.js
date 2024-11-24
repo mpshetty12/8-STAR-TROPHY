@@ -16,6 +16,7 @@ const BiddingPage = () => {
     const [timer, setTimer] = useState(0); // Initial timer value
     const [playerCount, setPlayerCount] = useState(0); // Track the number of players for the team
     const teamId = sessionStorage.getItem("teamId");
+    const [teamName, setTeamName] = useState("null");
 
     const timerRef = useRef(null); // Reference to store the timer interval
 
@@ -56,6 +57,20 @@ const BiddingPage = () => {
 
     useEffect(() => {
         // Fetch the current team document to get the maxBidPoint and players count
+        const teamDocRef1 = doc(db, "teams", teamId);
+        // const teamSnapshot = getDoc(teamDocRef1);
+        // const teamData1 = teamSnapshot.data();
+        // setTeamName(teamData1.team_name);
+
+
+        const unsubscribeTeam1 = onSnapshot(teamDocRef1, (teamSnapshot) => {
+            if (teamSnapshot.exists()) {
+                const teamData1 = teamSnapshot.data();
+                setTeamName(teamData1.team_name);
+            }
+        });
+
+
         const teamRef = doc(db, "teams", teamId);
         const unsubscribeTeam = onSnapshot(teamRef, (teamSnapshot) => {
             if (teamSnapshot.exists()) {
@@ -92,6 +107,7 @@ const BiddingPage = () => {
         // Clean up listeners on component unmount
         return () => {
             unsubscribeTeam();
+            unsubscribeTeam1();
             unsubscribeBid();
         };
     }, [teamId, maxBidPoint]); // Re-run when teamId or maxBidPoint changes
@@ -120,7 +136,7 @@ const BiddingPage = () => {
 
     return (
         <div className="bidding-page-container">
-            <h2>Welcome Team {teamId}</h2>
+            <h2>Welcome Team {teamName}</h2>
             {currentPlayer ? (
                 <div className="player-card">
                     <img
@@ -164,6 +180,9 @@ const BiddingPage = () => {
                                 value={selectedBid || currentBidPoint}
                                 disabled={!canBid}
                             >
+                                <option >
+                                        select
+                                    </option>
                                 {Array.from(
                                     { length: maxBidPoint - currentBidPoint },
                                     (_, i) => i + currentBidPoint + 1

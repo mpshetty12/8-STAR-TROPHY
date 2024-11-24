@@ -20,6 +20,7 @@ function App() {
         <Route path="/bidding" element={<BiddingPage />} />
         <Route path="/admin12345678980" element={<Admin />} />
         <Route path='/login' element={<LoginPage/>} />
+        {/* <Route path="/viewp" element={<AdminViewOnly/>}/> */}
       </Routes>
     </Router>
   );
