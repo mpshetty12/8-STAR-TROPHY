@@ -84,13 +84,13 @@ const FormPage = () => {
       await uploadBytes(storageRef, formData.photo);
       const photoUrl = await getDownloadURL(storageRef);
 
-      let aadharPhotoUrl = null;
-      if (formData.playerType === 'Legend Player' && formData.aadharPhoto) {
-        const aadharFileName = `${Date.now()}_${formData.aadharPhoto.name}`;
-        const aadharStorageRef = ref(storage, `aadharPhotos/${aadharFileName}`);
-        await uploadBytes(aadharStorageRef, formData.aadharPhoto);
-        aadharPhotoUrl = await getDownloadURL(aadharStorageRef);
-      }
+      // let aadharPhotoUrl = null;
+      // if (formData.playerType === 'Legend Player' && formData.aadharPhoto) {
+      //   const aadharFileName = `${Date.now()}_${formData.aadharPhoto.name}`;
+      //   const aadharStorageRef = ref(storage, `aadharPhotos/${aadharFileName}`);
+      //   await uploadBytes(aadharStorageRef, formData.aadharPhoto);
+      //   aadharPhotoUrl = await getDownloadURL(aadharStorageRef);
+      // }
 
       // Add player data to the "users" collection
       await addDoc(collection(db, 'users'), {
@@ -104,10 +104,10 @@ const FormPage = () => {
         fmcid: nextFmcid,
         teamid: formData.team,
         payment: '',
-        ...(formData.playerType === 'Legend Player' && {
-          aadhar_number: formData.aadharNumber,
-          aadhar_photo_url: aadharPhotoUrl,
-        }),
+        // ...(formData.playerType === 'Legend Player' && {
+        //   aadhar_number: formData.aadharNumber,
+        //   aadhar_photo_url: aadharPhotoUrl,
+        // }),
       });
 
       // Update the selected team document in the "teams" collection
@@ -189,7 +189,7 @@ const FormPage = () => {
               </select>
             </div>
 
-            {formData.playerType === 'Legend Player' && (
+            {/* {formData.playerType === 'Legend Player' && (
               <>
                 <div className="input-group">
                   <label htmlFor="aadharNumber">Aadhar Number</label>
@@ -201,7 +201,7 @@ const FormPage = () => {
                   <input type="file" id="aadharPhoto" name="aadharPhoto" onChange={handleFileChange} required />
                 </div>
               </>
-            )}
+            )} */}
 
             {(formData.playerType === 'Owner' || formData.playerType === 'Icon Player' || formData.playerType === 'Legend Player') && (
               <div className="input-group">

@@ -1,188 +1,131 @@
-Container styles
-/* Team View Styles */
 .teamview-container {
-  background: linear-gradient(to bottom right, #2b5876, #4e4376);
-  color: white;
   font-family: Arial, sans-serif;
   padding: 20px;
-  min-height: 100vh;
 }
 
-/* Header */
 .header {
   text-align: center;
-  padding: 20px;
-  background: rgba(0, 0, 0, 0.5);
-  border-radius: 10px;
+  margin-bottom: 30px;
+}
+
+.navbar {
   margin-bottom: 20px;
 }
 
-.header h1 {
-  font-size: 36px;
-  color: #ffcc00;
-  text-shadow: 2px 2px 4px #000;
+select {
+  padding: 8px;
+  width: 100%;
+  max-width: 300px;
 }
 
-.header p {
-  font-size: 18px;
-  color: white;
+.players-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
 }
-.teamview-container {
-    padding: 20px;
-    max-width: 1200px;
-    margin: 0 auto;
-    font-family: Arial, sans-serif;
-    color: #333;
-  }
-  
-  /* Header */
-  .teamview-container h2 {
-    text-align: center;
-    font-size: 2em;
-    margin-bottom: 20px;
-    color: #4A90E2;
-  }
-  
-  /* Team select */
-  .team-select {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 30px;
-  }
-  
-  .team-select label {
-    margin-right: 10px;
-    font-weight: bold;
-  }
-  
-  .team-select select {
-    padding: 8px;
-    font-size: 1em;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-  }
-  
-  /* Password form */
-  .password-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-  
-  .password-container h2 {
-    margin-bottom: 10px;
-    color: #4A90E2;
-  }
-  
-  .password-container form {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  
-  .password-container input,
-  .password-container button {
-    padding: 8px;
-    font-size: 0.9em;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-  }
-  
-  .password-container button {
-    background-color: #4A90E2;
-    color: white;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  .password-container button:hover {
-    background-color: #357ABD;
-  }
-  
-  /* Player list and card layout */
+
+.player-card {
+  width: 100%;
+  height: 350px;
+  perspective: 1000px;
+}
+
+
+.player-card img {
+  width: 100%;
+  height: 100%;
+  border-radius: 0; /* Ensure no rounding applied */
+  object-fit: cover;
+}
+
+.player-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transform: rotateY(0);
+  transition: transform 0.5s;
+}
+
+.player-card:hover .player-card-inner {
+  transform: rotateY(180deg);
+}
+
+.player-card-front,
+.player-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+}
+
+.player-card-front {
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.player-card-back {
+  background-color: #f1f1f1;
+  padding: 20px;
+  display: block;
+  transform: rotateY(180deg);
+}
+
+.player-image {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+}
+
+.player-type {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.player-type.owner {
+  background-color: #ff6347;
+}
+
+.player-type.legend {
+  background-color: #32cd32;
+}
+
+.player-type.icon {
+  background-color: #1e90ff;
+}
+
+.player-card h3 {
+  margin-top: 10px;
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+.player-card-back p {
+  margin: 5px 0;
+}
+
+@media (max-width: 768px) {
   .players-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 15px;
-    padding: 10px;
-    justify-items: center;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   }
-  
-  /* Player card */
+
   .player-card {
-    width: 100%;
-    max-width: 260px;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    padding: 15px;
-    background-color: #f9f9f9;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    position: relative;
-    transition: transform 0.3s;
+    height: 300px;
   }
-  
-  .player-card:hover {
-    transform: translateY(-5px);
+}
+
+@media (max-width: 480px) {
+  .player-card {
+    height: 250px;
   }
-  
-  .player-image {
-    width: 100%;
-    height: 150px;
-    border-radius: 8px;
-    object-fit: cover;
-    margin-bottom: 10px;
-  }
-  
-  .no-image {
-    height: 150px;
-    background-color: #ddd;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #888;
-  }
-  
-  .player-card h3 {
-    margin-bottom: 8px;
-    font-size: 1.1em;
-    color: #333;
-  }
-  
-  .player-card p {
-    margin: 4px 0;
-    font-size: 0.9em;
-  }
-  
-  .mark-paid-btn {
-    position: absolute;
-    bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 6px 10px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    font-size: 0.9em;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  .mark-paid-btn:hover {
-    background-color: #45a049;
-  }
-  
-  /* Responsive styling */
-  @media (max-width: 768px) {
-    .players-list {
-      grid-template-columns: 1fr;
-    }
-  
-    .password-container form {
-      width: 100%;
-    }
-  }
-  
+}
