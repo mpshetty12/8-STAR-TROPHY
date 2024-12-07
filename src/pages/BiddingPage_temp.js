@@ -14,15 +14,15 @@ const BiddingPage = () => {
     const [winningTeam, setWinningTeam] = useState(null); // Store the winning team ID
     const [winningBid, setWinningBid] = useState(null); // Store the winning bid amount
     const [timer, setTimer] = useState(0); // Initial timer value
-    const [playerCount, setPlayerCount] = useState(0); // Track the number of players for the team
+    // const [playerCount, setPlayerCount] = useState(0); // Track the number of players for the team
     const teamId = sessionStorage.getItem("teamId");
     const [teamName, setTeamName] = useState("null");
 
     const timerRef = useRef(null); // Reference to store the timer interval
 
-    const handleBuyClick = () => {
-        setDropdownVisible(true);
-    };
+    // const handleBuyClick = () => {
+    //     setDropdownVisible(true);
+    // };
 
     useEffect(() => {
         // Fetch the current bid document to get the timer value
@@ -75,7 +75,7 @@ const BiddingPage = () => {
             if (teamSnapshot.exists()) {
                 const teamData = teamSnapshot.data();
                 setMaxBidPoint(teamData.maxbidpoint || 0); // Update maxBidPoint from Firestore, default to 100 if missing
-                setPlayerCount(teamData.players.length || 0); // Update player count
+                // setPlayerCount(teamData.players.length || 0); // Update player count
             }
         });
 

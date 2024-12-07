@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { db } from './firebase';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import './teamview.css';
-import { doc, updateDoc } from 'firebase/firestore';
 
 // const addPlayerIdField = async () => {
 //   try {
