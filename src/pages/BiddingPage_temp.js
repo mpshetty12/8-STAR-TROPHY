@@ -9,7 +9,7 @@ const BiddingPage = () => {
     const [maxBidPoint, setMaxBidPoint] = useState(100); // Default to 100 initially
     const [selectedBid, setSelectedBid] = useState(null);
     const [dropdownVisible, setDropdownVisible] = useState(false);
-    const [canBid, setCanBid] = useState(true);
+    const [canBid, setCanBid] = useState(false);
     const [isBidClosed, setIsBidClosed] = useState(false); // Track if the bid is closed
     const [winningTeam, setWinningTeam] = useState(null); // Store the winning team ID
     const [winningBid, setWinningBid] = useState(null); // Store the winning bid amount
@@ -19,6 +19,10 @@ const BiddingPage = () => {
     const [teamName, setTeamName] = useState("null");
 
     const timerRef = useRef(null); // Reference to store the timer interval
+
+    const handleBuyClick = () => {
+        setDropdownVisible(true);
+    };
 
     useEffect(() => {
         // Fetch the current bid document to get the timer value
@@ -58,10 +62,6 @@ const BiddingPage = () => {
     useEffect(() => {
         // Fetch the current team document to get the maxBidPoint and players count
         const teamDocRef1 = doc(db, "teams", teamId);
-        // const teamSnapshot = getDoc(teamDocRef1);
-        // const teamData1 = teamSnapshot.data();
-        // setTeamName(teamData1.team_name);
-
 
         const unsubscribeTeam1 = onSnapshot(teamDocRef1, (teamSnapshot) => {
             if (teamSnapshot.exists()) {
@@ -70,12 +70,11 @@ const BiddingPage = () => {
             }
         });
 
-
         const teamRef = doc(db, "teams", teamId);
         const unsubscribeTeam = onSnapshot(teamRef, (teamSnapshot) => {
             if (teamSnapshot.exists()) {
                 const teamData = teamSnapshot.data();
-                setMaxBidPoint(teamData.maxbidpoint || 100); // Update maxBidPoint from Firestore, default to 100 if missing
+                setMaxBidPoint(teamData.maxbidpoint || 0); // Update maxBidPoint from Firestore, default to 100 if missing
                 setPlayerCount(teamData.players.length || 0); // Update player count
             }
         });
@@ -112,10 +111,6 @@ const BiddingPage = () => {
         };
     }, [teamId, maxBidPoint]); // Re-run when teamId or maxBidPoint changes
 
-    const handleBuyClick = () => {
-        setDropdownVisible(true);
-    };
-
     const handleBidSelection = async (bid) => {
         setSelectedBid(bid);
 
@@ -138,13 +133,13 @@ const BiddingPage = () => {
         <div className="bidding-page-container">
             <h2>Welcome Team {teamName}</h2>
             {currentPlayer ? (
-                <div className="player-card">
+                <div className="b-player-card">
                     <img
                         src={currentPlayer.Playerphotourl || "https://via.placeholder.com/150"}
                         alt={currentPlayer.playerName}
-                        className="player-image"
+                        className="b-player-image"
                     />
-                    <div className="player-details">
+                    <div className="b-player-details">
                         <h3>{currentPlayer.playerName}</h3>
                         <p><strong>Player ID:</strong> {currentPlayer.playerFmcid}</p>
                         <p><strong>Mobile number:</strong> {currentPlayer.playerMobilenumber}</p>
@@ -152,9 +147,55 @@ const BiddingPage = () => {
                         <p><strong>Jersey No :</strong> {currentPlayer.playerJerseynumber}</p>
                         <p><strong>Shirt Size:</strong> {currentPlayer.playerShirtsize}</p>
                         <p><strong>Player Type:</strong> {currentPlayer.playerType}</p>
+                        <p><strong>Time remaining:</strong> {timer} seconds</p>
+                        <p>*************</p>
+                        <p><strong>Top Bidder:</strong> {currentPlayer.playercurrentbidpoint}</p>
+                        <p><strong>Bid Point:</strong> {currentPlayer.team_id}</p>
                     </div>
+                    {currentPlayer.playerTop === 1 || currentPlayer.playerTop === 2 ? (
+    <div className="bid-buttons">
+        {currentBidPoint + 1 <= maxBidPoint && (
+            <button
+                className="bid-button"
+                onClick={() => handleBidSelection(currentBidPoint + 1)}
+                // disabled={timer === 0 || !canBid || isBidClosed} // Disable when timer is 0
+            >
+                +1
+            </button>
+        )}
+        {currentBidPoint + 2 <= maxBidPoint && (
+            <button
+                className="bid-button"
+                onClick={() => handleBidSelection(currentBidPoint + 2)}
+                // disabled={timer === 0 || !canBid || isBidClosed} // Disable when timer is 0
+            >
+                +2
+            </button>
+        )}
+    </div>
+) : currentPlayer.playerTop === 3 && !isBidClosed ? (
+    <div className="bid-buttons">
+        {currentBidPoint + 1 <= maxBidPoint && (
+            <button
+                className="bid-button"
+                onClick={() => handleBidSelection(currentBidPoint + 1)}
+                disabled={timer === 0 || !canBid || isBidClosed} // Disable when timer is 0
+            >
+                +1
+            </button>
+        )}
+        {currentBidPoint + 2 <= maxBidPoint && (
+            <button
+                className="bid-button"
+                onClick={() => handleBidSelection(currentBidPoint + 2)}
+                disabled={timer === 0 || !canBid || isBidClosed} // Disable when timer is 0
+            >
+                +2
+            </button>
+        )}
+    </div>
+) : null}
 
-                    <p><strong>Time remaining:</strong> {timer} seconds</p>
 
                     {isBidClosed ? (
                         <div className="winning-bid-info">
@@ -163,13 +204,7 @@ const BiddingPage = () => {
                             <p>Bidding closed for this player.</p>
                         </div>
                     ) : (
-                        <button
-                            className="buy-button"
-                            onClick={handleBuyClick}
-                            disabled={!canBid || timer === 0 || playerCount >= 10}
-                        >
-                            Buy
-                        </button>
+                        <div></div>
                     )}
 
                     {dropdownVisible && canBid && (
@@ -180,9 +215,7 @@ const BiddingPage = () => {
                                 value={selectedBid || currentBidPoint}
                                 disabled={!canBid}
                             >
-                                <option >
-                                        select
-                                    </option>
+                                <option value={0}>Select</option>
                                 {Array.from(
                                     { length: maxBidPoint - currentBidPoint },
                                     (_, i) => i + currentBidPoint + 1

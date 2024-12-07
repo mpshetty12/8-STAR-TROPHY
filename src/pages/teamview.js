@@ -2,12 +2,31 @@ import React, { useState, useEffect } from 'react';
 import { db } from './firebase';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import './teamview.css';
+import { doc, updateDoc } from 'firebase/firestore';
+
+// const addPlayerIdField = async () => {
+//   try {
+//     const usersCollection = collection(db, 'users'); // Reference to the users collection
+//     const snapshot = await getDocs(usersCollection);
+
+//     // Loop through each document to add the player_id field
+//     for (const userDoc of snapshot.docs) {
+//       const userRef = doc(db, 'users', userDoc.id); // Reference to the specific document
+//       await updateDoc(userRef, { top: 3 }); // Add or update the player_id field
+//     }
+
+//     console.log('player_id field added successfully to all documents.');
+//   } catch (error) {
+//     console.error('Error updating documents:', error);
+//   }
+// };
+
 
 const TeamView = () => {
   const [teams, setTeams] = useState([]);
   const [selectedTeam, setSelectedTeam] = useState('');
   const [players, setPlayers] = useState([]);
-
+ 
 
   useEffect(() => {
       const fetchTeams = async () => {
@@ -83,6 +102,7 @@ const TeamView = () => {
 
   return (
     <div className="teamview-container">
+      {/* <button onClick={addPlayerIdField}>Admin Panel</button> */}
       <h2>Team View</h2>
         <>
           <header className="header">

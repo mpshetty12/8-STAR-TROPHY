@@ -9,6 +9,7 @@ const WelcomePage = () => {
 
   // Correct Admin Password
   const correctAdminPassword = '3003';  // Change this password to whatever you prefer
+  
 
   const handleAdminClick = () => {
     const enteredPassword = prompt('Please enter the admin password:');
@@ -42,6 +43,7 @@ const WelcomePage = () => {
 
       {/* Welcome Text */}
       <h1>Welcome to KPL 2025</h1>
+      <h4>Registration Closed, will open all teams and players view soon</h4>
 
       {/* Error Message for Incorrect Password */}
       {error && <p className="error-message">{error}</p>}
@@ -50,8 +52,7 @@ const WelcomePage = () => {
       <div className="button-container">
         {!isAdmin ? (
           <>
-            <button onClick={() => navigate('/form')}>Player Registration</button>
-            <button onClick={handleAdminClick}>Admin Panel</button>
+            <button onClick={handleAdminClick}>KPL Organizers Panel</button>
           </>
         ) : (
           <>
@@ -60,6 +61,7 @@ const WelcomePage = () => {
             <button onClick={() => navigate('/teamview')}>Team View</button>
             <button onClick={() => navigate('/login')}>Bidding</button>
             <button onClick={() => navigate('/admin12345678980')}>Bidd Start</button>
+            <button onClick={() => navigate('/p')}>Bidd View</button>
           </>
         )}
       </div>

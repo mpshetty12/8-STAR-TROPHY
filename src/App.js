@@ -7,6 +7,7 @@ import TeamView from './pages/teamview';
 import BiddingPage from './pages/BiddingPage_temp';
 import Admin from './pages/Admin';
 import LoginPage from './pages/Logipppage';
+import PubliccDisplay from './pages/Publicc';
 
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
         <Route path="/bidding" element={<BiddingPage />} />
         <Route path="/admin12345678980" element={<Admin />} />
         <Route path='/login' element={<LoginPage/>} />
+        <Route path='/p' element={<PubliccDisplay/>} />
         {/* <Route path="/viewp" element={<AdminViewOnly/>}/> */}
       </Routes>
     </Router>
