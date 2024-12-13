@@ -52,6 +52,8 @@ const WelcomePage = () => {
       <div className="button-container">
         {!isAdmin ? (
           <>
+            <button onClick={() => navigate('/p')}>Bidd View</button>
+            <button onClick={() => navigate('/login')}>Team Login</button>
             <button onClick={handleAdminClick}>KPL Organizers Panel</button>
           </>
         ) : (
@@ -75,3 +77,5 @@ const WelcomePage = () => {
 };
 
 export default WelcomePage;
+
+

@@ -3,14 +3,26 @@ import { useNavigate } from "react-router-dom";
 import "./logc.css";
 
 const teamPasswords = {
-    1: "0password1",
-    2: "1password2",
-    3: "2password3",
-    4: "3password4",
-    5: "4password5",
-    6: "5password6",
-    7: "6password7",
-    8: "7password8"
+    1: "0p1",
+    2: "1p2",
+    3: "2p3",
+    4: "3p4",
+    5: "4p5",
+    6: "5p6",
+    7: "6p7",
+    8: "7p8",
+    9: "8p9",
+    10: "9p10",
+    11: "10p11",
+    12: "11p12",
+    13: "12p13",
+    14: "13p14",
+    15: "14p15",
+    16: "15p16",
+    17: "16p17",
+    18: "17p18",
+    19: "18p19",
+    20: "19p20"
 };
 
 const LoginPage = () => {

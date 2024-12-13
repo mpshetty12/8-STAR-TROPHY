@@ -6,49 +6,23 @@ body {
 }
 
 .kpl-container {
-    height: 100vh;
-    width: 100vw;
-    position: relative;
-    overflow: hidden;
-}
-
-.kpl-background {
-    background: url("https://www.google.com/imgres?q=KPL&imgurl=https%3A%2F%2Fstatic.toiimg.com%2Fthumb%2Fmsid-72153180%2Cwidth-1280%2Cheight-720%2Cresizemode-4%2F72153180.jpg&imgrefurl=https%3A%2F%2Ftimesofindia.indiatimes.com%2Fsports%2Fcricket%2Fnews%2Fdid-foreign-ipl-stars-and-bookies-honey-trap-kpl-players%2Farticleshow%2F72153175.cms&docid=EMVG0JmhbSujnM&tbnid=bpKHXGCihXoNFM&vet=12ahUKEwjnvovMrpaKAxV2klYBHbYpOqEQM3oECBwQAA..i&w=1280&h=720&hcb=2&ved=2ahUKEwjnvovMrpaKAxV2klYBHbYpOqEQM3oECBwQAA") center/cover no-repeat, linear-gradient(180deg, #1a237e, #0d47a1);
-    height: 100%;
+    min-height: 100vh;
     width: 100%;
-    position: absolute;
+    position: relative;
+    overflow-y: auto;
+    background: linear-gradient(180deg, #1a237e, #0d47a1);
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    animation: fade-in 1s ease;
-}
-
-.kpl-background.warning-mode {
-    background: radial-gradient(circle, red, darkred);
-    animation: pulse-bg 1s infinite alternate;
-}
-
-@keyframes fade-in {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
-
-@keyframes pulse-bg {
-    from {
-        filter: brightness(0.8);
-    }
-    to {
-        filter: brightness(1.2);
-    }
+    justify-content: flex-start;
+    color: white;
+    padding: 20px;
 }
 
 .timer-container {
-    margin: 20px;
+    margin-bottom: 20px;
+    width: 100%;
+    text-align: center;
 }
 
 .timer-circle {
@@ -59,7 +33,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 50px;
+    font-size: 40px;
     font-weight: bold;
 }
 
@@ -76,30 +50,55 @@ body {
     }
 }
 
-.bid-info {
-    margin: 20px;
+.second-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-top: 20px;
+    gap: 20px;
+}
+
+.column {
+    flex: 1;
+    max-width: 30%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     text-align: center;
-    color: white;
+}
+
+.column.large {
+    flex: 2;
+    max-width: 40%;
 }
 
 .team-name, .bid-points {
-    font-size: 36px;
+    font-size: 24px;
     font-weight: bold;
 }
 
-.player-info {
-    text-align: center;
-    margin-top: 20px;
-    color: white;
-}
-
 .player-image {
-    width: 150px;
-    height: 150px;
+    width: 400px;
+    max-width: 400px;
+    height: 350px;
     border-radius: 50%;
     border: 4px solid #ffc107;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
     margin-bottom: 10px;
+}
+
+.max-bid-points{
+    overflow-y: scroll;
+}
+.player-info h3 {
+    font-size: 24px;
+    margin: 10px 0;
+}
+
+.player-info p {
+    font-size: 18px;
 }
 
 .winning-overlay {
@@ -109,16 +108,73 @@ body {
     height: 100%;
     width: 100%;
     background: rgba(0, 0, 0, 0.9);
-    color: #ffffff;
+    color: white;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    animation: fade-in 2s ease;
+    z-index: 10;
+    animation: fade-in 1s ease;
 }
 
 .winner-announcement {
-    font-size: 80px;
+    font-size: 60px;
     color: gold;
     text-shadow: 0 0 20px rgba(255, 255, 255, 0.9);
+}
+
+.winning-overlay h2 {
+    font-size: 36px;
+    margin: 10px 0;
+}
+
+.marquee-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 30px;
+    width: 100%;
+    font-family: Arial, sans-serif;
+    font-size: 2rem;
+    color: yellow;
+    overflow: hidden;
+}
+
+.marquee-text {
+    white-space: nowrap;
+    animation: marquee 20s linear infinite;
+}
+
+@keyframes marquee {
+    from {
+        transform: translateX(100%);
+    }
+    to {
+        transform: translateX(-100%);
+    }
+}
+
+
+@media (max-width: 768px) {
+    .second-row {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .column {
+        max-width: 100%;
+    }
+
+    .player-image {
+        width: 100%;
+        height: 100%;
+    }
+
+    .winner-announcement {
+        font-size: 48px;
+    }
+
+    .winning-overlay h2 {
+        font-size: 28px;
+    }
 }

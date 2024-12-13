@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { db } from './firebase';
-import { collection, getDocs, query, where } from 'firebase/firestore';
+import { collection, getDocs, query, where} from 'firebase/firestore';
 import './teamview.css';
 
 // const addPlayerIdField = async () => {
 //   try {
 //     const usersCollection = collection(db, 'users'); // Reference to the users collection
 //     const snapshot = await getDocs(usersCollection);
+//     var a = 3000;
 
 //     // Loop through each document to add the player_id field
 //     for (const userDoc of snapshot.docs) {
 //       const userRef = doc(db, 'users', userDoc.id); // Reference to the specific document
-//       await updateDoc(userRef, { top: 3 }); // Add or update the player_id field
+//       await updateDoc(userRef, { orderid: a++ }); // Add or update the player_id field
 //     }
 
 //     console.log('player_id field added successfully to all documents.');

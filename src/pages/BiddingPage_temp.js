@@ -1,9 +1,42 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { db } from "./firebase";
-import { doc, onSnapshot, getDoc, updateDoc } from "firebase/firestore";
+import { doc, onSnapshot, getDoc, updateDoc, collection, getDocs, query, orderBy } from "firebase/firestore";
+import { Navigate } from 'react-router-dom';
 import "./bidc.css";
 
 const BiddingPage = () => {
+    useEffect(() => {
+        const fetchTeamNames = async () => {
+          const teamCollection = collection(db, "teams"); // Reference to the "teams" collection
+          const teamQuery = query(teamCollection, orderBy("team_id")); // Query sorted by team_id field
+          const teamSnapshot = await getDocs(teamQuery); // Fetch all documents from the collection
+          const teamList = ["KPL"];  // Start with KPL as the first team
+    
+          // Collect teams and their IDs into an array
+          const teamsArray = [];
+          teamSnapshot.forEach((doc) => {
+            const teamData = doc.data();
+            teamsArray.push({
+              id: doc.id,       // Document ID (if needed)
+              name: teamData.team_name // Team name
+            });
+          });
+    
+          // Sort teams array by the team_id field in the document
+          teamsArray.sort((a, b) => a.team_id - b.team_id); // Sort numerically if team_id is a number
+    
+          // Add sorted team names to the teamList
+          teamsArray.forEach(team => {
+            teamList.push(team.name);
+          });
+    
+          setTeamss(teamList);  // Set the state with the fetched and sorted team names
+          console.log(teamList);
+        };
+    
+        fetchTeamNames();
+      }, []);
+    const [teamss, setTeamss] = useState([""]);
     const [currentPlayer, setCurrentPlayer] = useState(null);
     const [currentBidPoint, setCurrentBidPoint] = useState(0);
     const [maxBidPoint, setMaxBidPoint] = useState(100); // Default to 100 initially
@@ -13,12 +46,17 @@ const BiddingPage = () => {
     const [isBidClosed, setIsBidClosed] = useState(false); // Track if the bid is closed
     const [winningTeam, setWinningTeam] = useState(null); // Store the winning team ID
     const [winningBid, setWinningBid] = useState(null); // Store the winning bid amount
-    const [timer, setTimer] = useState(0); // Initial timer value
+    const [timer, setTimer] = useState(100); // Initial timer value
     // const [playerCount, setPlayerCount] = useState(0); // Track the number of players for the team
     const teamId = sessionStorage.getItem("teamId");
+    useEffect(() => {
+        if (!teamId) {
+            Navigate("/login");  // Redirect to login page if not logged in
+        }
+    }, [teamId]);
     const [teamName, setTeamName] = useState("null");
 
-    const timerRef = useRef(null); // Reference to store the timer interval
+    //const timerRef = useRef(null); // Reference to store the timer interval
 
     // const handleBuyClick = () => {
     //     setDropdownVisible(true);
@@ -37,26 +75,26 @@ const BiddingPage = () => {
         });
 
         // Clear previous interval and start a new one when timer resets
-        if (timerRef.current) clearInterval(timerRef.current);
+       // if (timerRef.current) clearInterval(timerRef.current);
 
-        timerRef.current = setInterval(() => {
-            setTimer((prevTimer) => {
-                const newTimer = prevTimer > 0 ? prevTimer - 1 : 0;
+        // timerRef.current = setInterval(() => {
+        //     setTimer((prevTimer) => {
+        //         const newTimer = prevTimer > 0 ? prevTimer - 1 : 100;
 
-                // Update timer in Firestore
-                const currentBidRef = doc(db, "bids", "currentBid");
-                updateDoc(currentBidRef, { time: newTimer }).catch(console.error);
+        //         // Update timer in Firestore
+        //         const currentBidRef = doc(db, "bids", "currentBid");
+        //         updateDoc(currentBidRef, { time: newTimer }).catch(console.error);
 
-                if (newTimer <= 0) {
-                    clearInterval(timerRef.current);
-                }
+        //         if (newTimer <= 0) {
+        //             clearInterval(timerRef.current);
+        //         }
 
-                return newTimer;
-            });
-        }, 1000);
+        //         return newTimer;
+        //     });
+        // }, 1000);
 
-        // Clean up interval on component unmount
-        return () => clearInterval(timerRef.current);
+        // // Clean up interval on component unmount
+        // return () => clearInterval(timerRef.current);
     }, [currentPlayer]); // Reset timer every time `currentPlayer` changes
 
     useEffect(() => {
@@ -120,7 +158,7 @@ const BiddingPage = () => {
             await updateDoc(currentBidRef, {
                 team_id: teamId,
                 playercurrentbidpoint: bid,
-                time: 20, // Reset timer to 20 seconds when a bid is placed
+                time: 45, // Reset timer to 45 seconds when a bid is placed
             });
             alert(`Your bid of ${bid} has been placed`);
             setDropdownVisible(false); // Hide dropdown after placing bid
@@ -149,7 +187,7 @@ const BiddingPage = () => {
                         <p><strong>Player Type:</strong> {currentPlayer.playerType}</p>
                         <p><strong>Time remaining:</strong> {timer} seconds</p>
                         <p>*************</p>
-                        <p><strong>Top Bidder:</strong> {currentPlayer.playercurrentbidpoint}</p>
+                        <p><strong>Top Bidder:</strong> {teamss[currentPlayer.team_id]}</p>
                         <p><strong>Bid Point:</strong> {currentPlayer.team_id}</p>
                     </div>
                     {currentPlayer.playerTop === 1 || currentPlayer.playerTop === 2 ? (
@@ -157,7 +195,7 @@ const BiddingPage = () => {
         {currentBidPoint + 1 <= maxBidPoint && (
             <button
                 className="bid-button"
-                onClick={() => handleBidSelection(currentBidPoint + 1)}
+                onClick={() => handleBidSelection(currentBidPoint)}
                 // disabled={timer === 0 || !canBid || isBidClosed} // Disable when timer is 0
             >
                 +1
