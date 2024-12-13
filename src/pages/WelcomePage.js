@@ -43,7 +43,7 @@ const WelcomePage = () => {
 
       {/* Welcome Text */}
       <h1>Welcome to KPL 2025</h1>
-      <h4>Registration Closed, will open all teams and players view soon</h4>
+      <h4>Registration Closed, Thanks everyone who are all registered to KPL-2025</h4>
 
       {/* Error Message for Incorrect Password */}
       {error && <p className="error-message">{error}</p>}
@@ -52,7 +52,9 @@ const WelcomePage = () => {
       <div className="button-container">
         {!isAdmin ? (
           <>
+            <button onClick={() => navigate('/view')}>Players Lists</button>
             <button onClick={() => navigate('/p')}>Bidd View</button>
+            <button onClick={() => navigate('/teamview')}>Team View</button>
             <button onClick={() => navigate('/login')}>Team Login</button>
             <button onClick={handleAdminClick}>KPL Organizers Panel</button>
           </>

@@ -286,9 +286,9 @@ const ViewPage = () => {
       </div>
 
       {/* Footer section for copyright */}
-      <footer className="footer" id="footerview">
+      {/* <footer className="footer" id="footerview">
         <p>&copy; 2024 mpshetty. All rights reserved.</p>
-      </footer>
+      </footer> */}
     </div>
   );
 };
