@@ -237,7 +237,7 @@ const BiddingPage = () => {
 
                     {isBidClosed ? (
                         <div className="winning-bid-info">
-                            <p><strong>Winning Team:</strong> {winningTeam}</p>
+                            <p><strong>Winning Team:</strong>{teamss[winningTeam]}</p>
                             <p><strong>Winning Bid:</strong> {winningBid} points</p>
                             <p>Bidding closed for this player.</p>
                         </div>
