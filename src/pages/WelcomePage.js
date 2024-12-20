@@ -8,7 +8,7 @@ const WelcomePage = () => {
   const [error, setError] = useState('');
 
   // Correct Admin Password
-  const correctAdminPassword = '3003';  // Change this password to whatever you prefer
+  const correctAdminPassword = '1010';  // Change this password to whatever you prefer
   
 
   const handleAdminClick = () => {
@@ -52,7 +52,6 @@ const WelcomePage = () => {
       <div className="button-container">
         {!isAdmin ? (
           <>
-            <button onClick={() => navigate('/view')}>Players Lists</button>
             <button onClick={() => navigate('/p')}>Bidd View</button>
             <button onClick={() => navigate('/teamview')}>Team View</button>
             <button onClick={() => navigate('/login')}>Team Login</button>
@@ -60,12 +59,12 @@ const WelcomePage = () => {
           </>
         ) : (
           <>
-            <button onClick={() => navigate('/form')}>Player Registration</button>
-            <button onClick={() => navigate('/view')}>Player Lists</button>
-            <button onClick={() => navigate('/teamview')}>Team View</button>
-            <button onClick={() => navigate('/login')}>Bidding</button>
+            {/* <button onClick={() => navigate('/form')}>Player Registration</button> */}
+            {/* <button onClick={() => navigate('/view')}>Player Lists</button> */}
+            {/* <button onClick={() => navigate('/teamview')}>Team View</button> */}
+            {/* <button onClick={() => navigate('/login')}>Bidding</button> */}
             <button onClick={() => navigate('/admin12345678980')}>Bidd Start</button>
-            <button onClick={() => navigate('/p')}>Bidd View</button>
+            {/* <button onClick={() => navigate('/p')}>Bidd View</button> */}
           </>
         )}
       </div>

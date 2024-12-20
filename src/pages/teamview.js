@@ -12,7 +12,7 @@ import './teamview.css';
 //     // Loop through each document to add the player_id field
 //     for (const userDoc of snapshot.docs) {
 //       const userRef = doc(db, 'users', userDoc.id); // Reference to the specific document
-//       await updateDoc(userRef, { orderid: a++ }); // Add or update the player_id field
+//       await updateDoc(userRef, { top: 3 }); // Add or update the player_id field
 //     }
 
 //     console.log('player_id field added successfully to all documents.');

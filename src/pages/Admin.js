@@ -17,42 +17,29 @@ import "./Admin.css";
 const Admin = () => {
     const updatePlayerIds = async () => {
         try {
-            // Fetch all documents from the "teams" collection
             const teamsSnapshot = await getDocs(collection(db, "teams"));
-    
-            // Iterate over each team document
+
             for (const teamDoc of teamsSnapshot.docs) {
                 const teamData = teamDoc.data();
-                const teamId = teamData.team_id; // Assume team_id exists in the team document
-                const players = teamData.players || []; // Get the players array
-    
-                // Debugging logs
+                const teamId = teamData.team_id;
+                const players = teamData.players || [];
+
                 console.log(`Processing team: ${teamId}, Players:`, players);
-    
-                // Iterate over each player in the players array
+
                 for (let index = 0; index < players.length; index++) {
                     const fmcid = players[index];
-    
-                    // Debugging each player
+
                     console.log(`Player index: ${index}, FMCID:`, fmcid, `Type:`, typeof fmcid);
-    
-                    // if (typeof fmcid !== "string") {
-                    //     console.warn(`Skipping invalid FMCID at index ${index}:`, fmcid);
-                    //     continue; // Skip invalid entries
-                    // }
-    
-                    // Compute the new player_id
-                    const playerId = (teamId * 10) + index;
-    
-                    // Query the "users" collection to find the document with the matching fmcid
+
+                    const playerId = teamId * 10 + index;
+
                     const usersQuery = query(
                         collection(db, "users"),
                         where("fmcid", "==", fmcid)
                     );
                     const usersSnapshot = await getDocs(usersQuery);
-    
+
                     if (!usersSnapshot.empty) {
-                        // Update the player_id field in the matched user document
                         usersSnapshot.forEach(async (userDoc) => {
                             const userRef = doc(db, "users", userDoc.id);
                             await updateDoc(userRef, { player_id: playerId });
@@ -63,16 +50,16 @@ const Admin = () => {
                     }
                 }
             }
-    
+
             console.log("Player IDs updated successfully.");
         } catch (error) {
             console.error("Error updating player IDs:", error);
         }
     };
-    
+
     const [players, setPlayers] = useState([]);
     const [currentPlayer, setCurrentPlayer] = useState(null);
-    const [currentFmcid, setCurrentFmcid] = useState(0);
+    // const [currentFmcid, setCurrentFmcid] = useState(0);
     const [timer, setTimer] = useState(100);
     const [currentBidData, setCurrentBidData] = useState({
         team_id: "N/A",
@@ -83,50 +70,22 @@ const Admin = () => {
     });
     const [teamName, setTeamName] = useState("N/A");
     const [showWinnerScreen, setShowWinnerScreen] = useState(false);
-    const [showMaxBidPoints, setShowMaxBidPoints] = useState(false); // State for showing max bid points in-page
-    const [teamsMaxBidPoints, setTeamsMaxBidPoints] = useState([]); // State to store teams' max bid points
-    const [password, setPassword] = useState(""); // Track password input
-    const [isAuthenticated, setIsAuthenticated] = useState(false); // Track if the password is correct
+    const [showMaxBidPoints, setShowMaxBidPoints] = useState(false);
+    const [teamsMaxBidPoints, setTeamsMaxBidPoints] = useState([]);
+    const [password, setPassword] = useState("");
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-    
+    const correctPassword = "admin123";
 
-    // Simulated password check (replace with your own logic)
-    const correctPassword = "admin123"; // This should be stored securely, not hardcoded!
-
-    // Handle password submission
     const handlePasswordSubmit = (e) => {
         e.preventDefault();
         if (password === correctPassword) {
-            setIsAuthenticated(true); // Set authenticated flag to true
+            setIsAuthenticated(true);
         } else {
             alert("Incorrect password. Please try again.");
         }
     };
 
-    // Timer logic for bids
-    // useEffect(() => {
-    //     if (timerRef.current) clearInterval(timerRef.current);
-
-    //     timerRef.current = setInterval(() => {
-    //         setTimer((prevTimer) => {
-    //             const newTimer = prevTimer > 0 ? prevTimer - 1 : 100;
-
-    //             // Update timer in Firestore
-    //             const currentBidRef = doc(db, "bids", "currentBid");
-    //             updateDoc(currentBidRef, { time: newTimer }).catch(console.error);
-
-    //             if (newTimer <= 0) {
-    //                 clearInterval(timerRef.current);
-    //             }
-
-    //             return newTimer;
-    //         });
-    //     }, 1000);
-
-    //     return () => clearInterval(timerRef.current);
-    // }, [currentPlayer]);
-
-    // Fetch team name for current bid
     useEffect(() => {
         if (currentBidData.team_id !== "N/A") {
             const fetchTeamName = async () => {
@@ -142,7 +101,6 @@ const Admin = () => {
         }
     }, [currentBidData.team_id]);
 
-    // Fetch players from Firestore
     useEffect(() => {
         const fetchPlayers = async () => {
             const playerSnapshot = await getDocs(collection(db, "users"));
@@ -155,7 +113,7 @@ const Admin = () => {
                             player.player_type
                         )
                 )
-                .sort((a, b) => a.fmcid - b.fmcid);
+                .sort((a, b) => a.orderid - b.orderid); // Sort by orderid
             setPlayers(fetchedPlayers);
         };
         fetchPlayers();
@@ -179,10 +137,9 @@ const Admin = () => {
         return () => unsubscribe();
     }, []);
 
-    // Next player logic
     const nextPlayer = async () => {
-        setShowWinnerScreen(false); // Hide winner screen on the next player
-        setShowMaxBidPoints(false); // Hide max bid points on next player
+        setShowWinnerScreen(false);
+        setShowMaxBidPoints(false);
 
         const currentBidRef = doc(db, "bids", "currentBid");
         setTimer(60);
@@ -192,106 +149,45 @@ const Admin = () => {
             return;
         }
 
-        // Filter players: exclude those already bidded and those with specific player types
-        const filteredPlayers = players
-            .filter(
-                (player) =>
-                    player.isBidded !== true &&
-                    !["Owner", "Icon Player", "Legend Player"].includes(player.player_type)
-            )
-            .sort((a, b) => {
-                const typeOrder = ["Owner", "Icon Player", "Legend Player", "Regular Player"];
-                return typeOrder.indexOf(b.player_type) - typeOrder.indexOf(a.player_type);
-            });
+        const remainingPlayers = players.filter(
+            (player) => player.orderid > (currentPlayer?.orderid || 0)
+        );
 
-        const remainingFmcids = filteredPlayers
-            .map((player) => player.fmcid)
-            .filter((fmcid) => fmcid > currentFmcid);
-
-        if (remainingFmcids.length === 0) {
+        if (remainingPlayers.length === 0) {
             alert("No more eligible players left. Restarting the player list.");
-            const allFilteredPlayers = players
-                .filter(
-                    (player) =>
-                        player.isBidded !== true &&
-                        !["Owner", "Icon Player", "Legend Player"].includes(player.player_type)
-                )
-                .sort((a, b) => {
-                    const typeOrder = ["Owner", "Icon Player", "Legend Player", "Regular Player"];
-                    return typeOrder.indexOf(b.player_type) - typeOrder.indexOf(a.player_type);
-                });
-
-            if (allFilteredPlayers.length === 0) {
-                alert("No players left to bid on.");
-                return;
-            }
-
-            const firstPlayer = allFilteredPlayers[0];
-            setCurrentPlayer(firstPlayer);
-            setCurrentFmcid(firstPlayer.fmcid);
-
-            const playerData = {
-                playerId: firstPlayer.id || "",
-                playerName: firstPlayer.name || "Unknown Player",
-                playerFmcid: firstPlayer.fmcid,
-                playerJerseynumber: firstPlayer.jersey_number || "Unknown Team",
-                playerShirtsize: firstPlayer.shirt_size || "Unknown Player",
-                playerMobilenumber: firstPlayer.mobile_number || "Unknown Position",
-                playerType: firstPlayer.player_type || "Unknown Team",
-                playerPayment: firstPlayer.payment || "Unknown Team",
-                playerAddress: firstPlayer.address || "Unknown Team",
-                playerTop: firstPlayer.top,
-                Playerphotourl: firstPlayer.photo_url || "https://via.placeholder.com/150",
-                playercurrentbidpoint: 0,
-                isClosed: false,
-                winner: "N/A",
-                winningBid: 0,
-                time: 0,
-            };
-
-            try {
-                await setDoc(currentBidRef, playerData);
-            } catch (error) {
-                console.error("Failed to update current bid:", error);
-            }
-
+            setPlayers((prevPlayers) => prevPlayers.sort((a, b) => a.orderid - b.orderid));
             return;
         }
 
-        const nextPlayer = filteredPlayers.find((player) => player.fmcid === remainingFmcids[0]);
+        const nextPlayer = remainingPlayers[0];
+        setCurrentPlayer(nextPlayer);
 
-        if (nextPlayer) {
-            setCurrentPlayer(nextPlayer);
-            setCurrentFmcid(nextPlayer.fmcid);
+        const playerData = {
+            playerId: nextPlayer.id || "",
+            playerName: nextPlayer.name || "Unknown Player",
+            playerFmcid: nextPlayer.fmcid,
+            playerJerseynumber: nextPlayer.jersey_number || "Unknown Team",
+            playerShirtsize: nextPlayer.shirt_size || "Unknown Player",
+            playerMobilenumber: nextPlayer.mobile_number || "Unknown Position",
+            playerType: nextPlayer.player_type || "Unknown Team",
+            playerPayment: nextPlayer.payment || "Unknown Team",
+            playerAddress: nextPlayer.address || "Unknown Team",
+            playerTop: nextPlayer.top,
+            Playerphotourl: nextPlayer.photo_url || "https://via.placeholder.com/150",
+            playercurrentbidpoint: 0,
+            isClosed: false,
+            winner: "N/A",
+            winningBid: 0,
+            time: 0,
+        };
 
-            const playerData = {
-                playerId: nextPlayer.id || "",
-                playerName: nextPlayer.name || "Unknown Player",
-                playerFmcid: nextPlayer.fmcid,
-                playerJerseynumber: nextPlayer.jersey_number || "Unknown Team",
-                playerShirtsize: nextPlayer.shirt_size || "Unknown Player",
-                playerMobilenumber: nextPlayer.mobile_number || "Unknown Position",
-                playerType: nextPlayer.player_type || "Unknown Team",
-                playerPayment: nextPlayer.payment || "Unknown Team",
-                playerAddress: nextPlayer.address || "Unknown Team",
-                playerTop: nextPlayer.top,
-                Playerphotourl: nextPlayer.photo_url || "https://via.placeholder.com/150",
-                playercurrentbidpoint: 0,
-                isClosed: false,
-                winner: "N/A",
-                winningBid: 0,
-                time: 0,
-            };
-
-            try {
-                await setDoc(currentBidRef, playerData);
-            } catch (error) {
-                console.error("Failed to update current bid:", error);
-            }
+        try {
+            await setDoc(currentBidRef, playerData);
+        } catch (error) {
+            console.error("Failed to update current bid:", error);
         }
     };
 
-    // Close bid logic
     const closeBid = async () => {
         const { team_id, playercurrentbidpoint } = currentBidData;
         if (team_id === "N/A" || !currentPlayer) {
@@ -329,7 +225,7 @@ const Admin = () => {
                     winningBid: playercurrentbidpoint,
                 });
 
-                setShowWinnerScreen(true); // Show the winner screen after closing the bid
+                setShowWinnerScreen(true);
                 alert(
                     `Bid closed for player ${currentPlayer.name}, assigned to team ${team_id}, and ${playercurrentbidpoint} deducted from team's max bid points.`
                 );
@@ -342,7 +238,6 @@ const Admin = () => {
         }
     };
 
-    // View all teams' max bid points
     const viewMaxBidPoints = async () => {
         try {
             const teamsSnapshot = await getDocs(collection(db, "teams"));
@@ -351,8 +246,8 @@ const Admin = () => {
                 maxBidPoint: doc.data().maxbidpoint,
             }));
 
-            setTeamsMaxBidPoints(teamMaxBidPoints); // Store the max bid points in state
-            setShowMaxBidPoints(true); // Show the max bid points section
+            setTeamsMaxBidPoints(teamMaxBidPoints);
+            setShowMaxBidPoints(true);
         } catch (error) {
             console.error("Error fetching teams' max bid points:", error);
             alert("Failed to fetch teams' max bid points.");
@@ -361,7 +256,6 @@ const Admin = () => {
 
     return (
         <div className="admin-container">
-            {/* Password input section */}
             {!isAuthenticated ? (
                 <div className="password-section">
                     <h2>Enter Password to Access Admin</h2>
@@ -377,22 +271,21 @@ const Admin = () => {
                     </form>
                 </div>
             ) : (
-                // Admin page content
                 <>
                     {showWinnerScreen ? (
                         <div className="">
                             <h5>Winner: {teamName}</h5>
                             <h5>Winning Bid: {currentBidData.winningBid}</h5>
-                                <button onClick={nextPlayer} className="next-player-btn">
-                                    Next FMCID
-                                </button>
-                                <button
-                                    onClick={viewMaxBidPoints}
-                                    className="view-max-bidpoints-btn"
-                                >
-                                    View All Teams' Max Bid Points
-                                </button>
-                                
+                            <button onClick={nextPlayer} className="next-player-btn">
+                                Next Player
+                            </button>
+                            <button
+                                onClick={viewMaxBidPoints}
+                                className="view-max-bidpoints-btn"
+                            >
+                                View All Teams' Max Bid Points
+                            </button>
+
                             {showMaxBidPoints && (
                                 <div className="max-bid-points">
                                     <h3>All Teams' Max Bid Points:</h3>
@@ -404,7 +297,7 @@ const Admin = () => {
                                         ))}
                                     </ul>
                                     <button onClick={nextPlayer} className="next-player-btn">
-                                        Next FMCID
+                                        Next Player
                                     </button>
                                 </div>
                             )}
@@ -449,7 +342,9 @@ const Admin = () => {
                                 >
                                     Close Bid
                                 </button>
-                                <button onClick={updatePlayerIds} className="view-max-bidpoints-btn" >kk </button>
+                                <button onClick={updatePlayerIds} className="view-max-bidpoints-btn">
+                                    Update Player IDs
+                                </button>
                             </div>
                         </>
                     )}
