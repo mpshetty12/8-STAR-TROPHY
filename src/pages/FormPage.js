@@ -16,6 +16,8 @@ const FormPage = () => {
     aadharNumber: '',
     aadharPhoto: null,
     team: '', // Store the selected team ID here
+    top: 1000,
+    orderid: 10000
   });
   const [teams, setTeams] = useState([]);
   const [formSubmitted, setFormSubmitted] = useState(false);
@@ -44,13 +46,13 @@ const FormPage = () => {
   };
 
   const checkIfMobileNumberExists = async (mobileNumber) => {
-    const q = query(collection(db, 'users'), where('mobile_number', '==', mobileNumber));
+    const q = query(collection(db, '8starplayers'), where('mobile_number', '==', mobileNumber));
     const querySnapshot = await getDocs(q);
     return !querySnapshot.empty;
   };
 
   const getNextFmcid = async () => {
-    const q = query(collection(db, 'users'), orderBy('fmcid', 'desc'), limit(1));
+    const q = query(collection(db, '8starplayers'), orderBy('fmcid', 'desc'), limit(1));
     const querySnapshot = await getDocs(q);
     if (!querySnapshot.empty) {
       const lastUser = querySnapshot.docs[0].data();
@@ -80,7 +82,7 @@ const FormPage = () => {
 
       const nextFmcid = await getNextFmcid();
       const photoFileName = `${Date.now()}_${formData.photo.name}`;
-      const storageRef = ref(storage, `playerPhotos/${photoFileName}`);
+      const storageRef = ref(storage, `8starplayers/${photoFileName}`);
       await uploadBytes(storageRef, formData.photo);
       const photoUrl = await getDownloadURL(storageRef);
 
@@ -92,8 +94,8 @@ const FormPage = () => {
       //   aadharPhotoUrl = await getDownloadURL(aadharStorageRef);
       // }
 
-      // Add player data to the "users" collection
-      await addDoc(collection(db, 'users'), {
+      // Add player data to the "8starplayers" collection
+      await addDoc(collection(db, '8starplayers'), {
         name: formData.name,
         shirt_size: formData.shirtSize,
         jersey_number: formData.jerseyNumber,
@@ -104,6 +106,8 @@ const FormPage = () => {
         fmcid: nextFmcid,
         teamid: formData.team,
         payment: '',
+        orderid: 10000,
+        top: 1000
         // ...(formData.playerType === 'Legend Player' && {
         //   aadhar_number: formData.aadharNumber,
         //   aadhar_photo_url: aadharPhotoUrl,
@@ -133,10 +137,9 @@ const FormPage = () => {
     <div className="form-container">
       {formSubmitted ? (
         <div className="success-message">
-          <h2>Form Submitted Successfully! please join below whatsapp group</h2>
-          <h3>https://chat.whatsapp.com/HBkDo5xbMyIKRjHBLOMTbN</h3>
+          <h2>Form Submitted Successfully!</h2>
           <div className="checkmark">&#10004;</div>
-          <p>Your details have been recorded.</p>
+          <p>Your details have been recorded. Organizers will connect you on Registrationfee 200 rupees</p>
         </div>
       ) : (
         <>
@@ -183,9 +186,9 @@ const FormPage = () => {
                 <option value="Bowler">Bowler</option>
                 <option value="Wicket Keeper">Wicket Keeper</option>
                 <option value="Allrounder">Allrounder</option>
-                <option value="Owner">Owner (ನೊಂದಾಯಿಸಿದ ತಂಡದವರಿಗೆ ಮಾತ್ರ)</option>
+                {/* <option value="Owner">Owner (ನೊಂದಾಯಿಸಿದ ತಂಡದವರಿಗೆ ಮಾತ್ರ)</option>
                 <option value="Icon Player">Icon Player (ನೊಂದಾಯಿಸಿದ ತಂಡದವರಿಗೆ ಮಾತ್ರ)</option>
-                <option value="Legend Player">Legend Player (ನೊಂದಾಯಿಸಿದ ತಂಡದವರಿಗೆ ಮಾತ್ರ)</option>
+                <option value="Legend Player">Legend Player (ನೊಂದಾಯಿಸಿದ ತಂಡದವರಿಗೆ ಮಾತ್ರ)</option> */}
               </select>
             </div>
 
@@ -203,7 +206,7 @@ const FormPage = () => {
               </>
             )} */}
 
-            {(formData.playerType === 'Owner' || formData.playerType === 'Icon Player' || formData.playerType === 'Legend Player') && (
+            {/* {(formData.playerType === 'Owner' || formData.playerType === 'Icon Player' || formData.playerType === 'Legend Player') && (
               <div className="input-group">
                 <label htmlFor="team">Select Team</label>
                 <select id="team" name="team" onChange={handleChange} required>
@@ -213,7 +216,7 @@ const FormPage = () => {
                   ))}
                 </select>
               </div>
-            )}
+            )} */}
 
             <div className="input-group">
               <label htmlFor="photo">Upload Photo</label>
