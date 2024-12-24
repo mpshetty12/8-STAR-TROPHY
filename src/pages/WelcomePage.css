@@ -11,7 +11,9 @@
     position: relative;
     transition: all 0.5s ease;
 }
-
+p {
+    color: white;
+}
 /* Admin Mode Styling */
 .welcome-container.admin-mode {
      /* Admin mode background */

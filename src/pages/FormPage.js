@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { storage, db } from './firebase';
+import { useNavigate } from 'react-router-dom';
+
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { collection, addDoc, query, where, getDocs, orderBy, limit, updateDoc, arrayUnion, doc } from 'firebase/firestore';
 import './FormPage.css';
 
 const FormPage = () => {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     name: '',
     shirtSize: '',
@@ -139,22 +143,21 @@ const FormPage = () => {
         <div className="success-message">
           <h2>Form Submitted Successfully!</h2>
           <div className="checkmark">&#10004;</div>
-          <p>Your details have been recorded. Organizers will connect you on Registration fee 100 rupees</p>
+          <p>ನಿಮ್ಮ ವಿವರಗಳು ಗಣನೆಗೆ ತೆಗೆದುಕೊಂಡಿದೆ, ನಿರ್ವಾಹಕರುಗಳು ನಿಮ್ಮನ್ನು ಸಂಪರ್ಕಿಸುವರು. ನಿಮ್ಮ ನೋಂದಣಿಯ ವಿವರಗಳನ್ನು ವೀಕ್ಷಿಸಲು ಈ ಕೆಳಗಿನ ಲಿಂಕ್ ಅಲ್ಲಿ ನೋಡಿ</p>
+          <button onClick={() => navigate('/view')}>Players View/ ನೋಂದಣಿಯಾದ ಆಟಗಾರರ ಪಟ್ಟಿ</button>
         </div>
       ) : (
         <>
-          <h2>Enter Player Details</h2>
+          <h2>Enter Player Details / ಆಟಗಾರರ ವಿವರಗಳು  (ಬೈಂದೂರು ವಿಧಾನಸಭಾ ಕ್ಷೇತ್ರ ವ್ಯಾಪ್ತಿಗೆ ಒಳಪಟ್ಟ ಆಟಗಾರರು ಮಾತ್ರ ನೋಂದಣಿಯಾಗಬೇಕು)</h2>
           <form onSubmit={handleSubmit}>
             <div className="input-group">
-              <label htmlFor="name">Name</label>
+              <label htmlFor="name">Name/ ಹೆಸರು</label>
               <input type="text" id="name" name="name" onChange={handleChange} required />
             </div>
-
             <div className="input-group">
-              <label htmlFor="shirtSize">Shirt Size</label>
+              <label htmlFor="shirtSize">T-Shirt Size/ ಟೀ ಶರ್ಟ್ ಸೈಜ್ </label>
               <select id="shirtSize" name="shirtSize" onChange={handleChange} required>
-                <option value="">Select Shirt Size</option>
-                <option value="XS">XS</option>
+                <option value="">ಸೈಜ್ ಆಯ್ಕೆ ಮಾಡಿ</option>
                 <option value="S">S</option>
                 <option value="M">M</option>
                 <option value="L">L</option>
@@ -164,28 +167,28 @@ const FormPage = () => {
             </div>
 
             <div className="input-group">
-              <label htmlFor="jerseyNumber">Jersey Number (0-999)</label>
+              <label htmlFor="jerseyNumber">Jersey Number/ ಜೆರ್ಸಿ ನಂಬರ್ (0-999)</label>
               <input type="number" id="jerseyNumber" name="jerseyNumber" min="0" max="999" onChange={handleChange} required />
             </div>
 
             <div className="input-group">
-              <label htmlFor="address">Address</label>
+              <label htmlFor="address">Address / ವಿಳಾಸ</label>
               <input type="text" id="address" name="address" onChange={handleChange} required />
             </div>
 
             <div className="input-group">
-              <label htmlFor="mobileNumber">Mobile Number</label>
+              <label htmlFor="mobileNumber">Mobile Numbe0r/ ಮೊಬೈಲ್ ಸಂಖ್ಯೆ</label>
               <input type="text" id="mobileNumber" name="mobileNumber" onChange={handleChange} required />
             </div>
 
             <div className="input-group">
-              <label htmlFor="playerType">Player Type</label>
+              <label htmlFor="playerType">Player Type/ ಆಟಗಾರನ ವಿಧ</label>
               <select id="playerType" name="playerType" onChange={handleChange} required>
-                <option value="">Select Player Type</option>
-                <option value="Batsman">Batsman</option>
-                <option value="Bowler">Bowler</option>
-                <option value="Wicket Keeper">Wicket Keeper</option>
-                <option value="Allrounder">Allrounder</option>
+                <option value="">ಆಯ್ಕೆ ಮಾಡಿ</option>
+                <option value="Batsman">Batsman/ ಬ್ಯಾಟ್ಸ್ ಮ್ಯಾನ್</option>
+                <option value="Bowler">Bowler/ ಬೋಲರ್</option>
+                <option value="Wicket Keeper">Wicket Keeper/ ವಿಕೆಟ್ ಕೀಪರ್ </option>
+                <option value="Allrounder">Allrounder/ ಆಲ್ ರೌಂಡರ್</option>
                 {/* <option value="Owner">Owner (ನೊಂದಾಯಿಸಿದ ತಂಡದವರಿಗೆ ಮಾತ್ರ)</option>
                 <option value="Icon Player">Icon Player (ನೊಂದಾಯಿಸಿದ ತಂಡದವರಿಗೆ ಮಾತ್ರ)</option>
                 <option value="Legend Player">Legend Player (ನೊಂದಾಯಿಸಿದ ತಂಡದವರಿಗೆ ಮಾತ್ರ)</option> */}
@@ -219,11 +222,11 @@ const FormPage = () => {
             )} */}
 
             <div className="input-group">
-              <label htmlFor="photo">Upload Photo</label>
+              <label htmlFor="photo">Upload Photo/ ಫೋಟೋ</label>
               <input type="file" id="photo" name="photo" onChange={handleFileChange} required />
             </div>
 
-            <button type="submit" disabled={isSubmitting}>Submit</button>
+            <button type="submit" disabled={isSubmitting}>Submit/ ಸಲ್ಲಿಸಿ</button>
           </form>
         </>
       )}

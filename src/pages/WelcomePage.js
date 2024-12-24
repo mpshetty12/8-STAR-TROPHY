@@ -43,13 +43,14 @@ const WelcomePage = () => {
       </div>
 
       {/* Welcome Text */}
-      <h1>8 STAR TROPHY 2025</h1>
+      <h1>8 ಸ್ಟಾರ್ ಟ್ರೋಫಿ 2025</h1>
       {/* <h4>Registration Closed, Thanks everyone who are all registered to KPL-2025</h4> */}
 
       {/* Error Message for Incorrect Password */}
       {/* {error && <p className="error-message">{error}</p>} */}
 
       {/* Button container */}
+      <p>ಬೈಂದೂರು ವಿಧಾನಸಭಾ ಕ್ಷೇತ್ರ ವ್ಯಾಪ್ತಿಗೆ ಒಳಪಟ್ಟ ಆಟಗಾರರು ಮಾತ್ರ ನೋಂದಣಿಯಾಗಬೇಕು</p>
       <div className="button-container">
           <>
             <button onClick={() => navigate('/form')}>Player Registration/ ಆಟಗಾರರ ನೊಂದಣಿ</button>
