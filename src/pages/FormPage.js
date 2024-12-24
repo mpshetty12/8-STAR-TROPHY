@@ -62,7 +62,7 @@ const FormPage = () => {
       const lastUser = querySnapshot.docs[0].data();
       return lastUser.fmcid + 1;
     } else {
-      return 31;
+      return 1;
     }
   };
 
@@ -148,7 +148,8 @@ const FormPage = () => {
         </div>
       ) : (
         <>
-          <h2>Enter Player Details / ಆಟಗಾರರ ವಿವರಗಳು  (ಬೈಂದೂರು ವಿಧಾನಸಭಾ ಕ್ಷೇತ್ರ ವ್ಯಾಪ್ತಿಗೆ ಒಳಪಟ್ಟ ಆಟಗಾರರು ಮಾತ್ರ ನೋಂದಣಿಯಾಗಬೇಕು)</h2>
+          <h2>Enter Player Details / ಆಟಗಾರರ ವಿವರಗಳು</h2>
+          <h4>(ಬೈಂದೂರು ವಿಧಾನಸಭಾ ಕ್ಷೇತ್ರ ವ್ಯಾಪ್ತಿಗೆ ಒಳಪಟ್ಟ ಆಟಗಾರರು ಮಾತ್ರ ನೋಂದಣಿಯಾಗಬೇಕು)</h4>
           <form onSubmit={handleSubmit}>
             <div className="input-group">
               <label htmlFor="name">Name/ ಹೆಸರು</label>

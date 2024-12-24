@@ -6,6 +6,7 @@ body {
     font-family: 'Arial', sans-serif; /* Set a default font */
     color: #333; /* Darker text color for better readability */
   }
+
   
   .form-container {
     max-width: 500px; /* Maximum width for the form */
@@ -83,7 +84,9 @@ body {
     color: #28a745; /* Green color for the checkmark */
     animation: checkmark-fade 0.5s ease-in-out; /* Animation for the checkmark */
   }
-  
+h4{
+  text-align: center;
+}
   @keyframes checkmark-fade {
     0% {
       opacity: 0;
