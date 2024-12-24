@@ -139,7 +139,7 @@ const FormPage = () => {
         <div className="success-message">
           <h2>Form Submitted Successfully!</h2>
           <div className="checkmark">&#10004;</div>
-          <p>Your details have been recorded. Organizers will connect you on Registrationfee 200 rupees</p>
+          <p>Your details have been recorded. Organizers will connect you on Registration fee 100 rupees</p>
         </div>
       ) : (
         <>
@@ -227,9 +227,7 @@ const FormPage = () => {
           </form>
         </>
       )}
-      <footer className="footer" id="formfooter">
-        <p>© 2024 mpshetty. All rights reserved.</p>
-      </footer>
+   
     </div>
   );
 };

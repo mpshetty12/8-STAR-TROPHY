@@ -31,9 +31,9 @@ const WelcomePage = () => {
       {/* President and Vice President images */}
       <div className="leaders-container">
         <div className="leader">
-          <img src="./poorna.jpeg" alt="President" className="leader-image" />
-          <p className="leader-title">SATHYA</p>
-          <p className="leader-title1">President</p>
+          <img src="./8star.jpeg" alt="President" className="leader-image" />
+          <p className="leader-title">ದಿನಾಂಕ : ಫೆಬ್ರವರಿ 14, 15, 16  2025</p>
+          <p className="leader-title1">ಸ್ಥಳ: ಗಾಂಧಿ ಮೈದಾನ ಬೈಂದೂರು</p>
         </div>
         {/* <div className="leader">
           <img src="./surendra.jpeg" alt="Vice President" className="leader-image" />
@@ -53,8 +53,8 @@ const WelcomePage = () => {
       <div className="button-container">
           <>
             <button onClick={() => navigate('/form')}>Player Registration/ ಆಟಗಾರರ ನೊಂದಣಿ</button>
-            {/* <button onClick={() => navigate('/p')}>Bidd View</button>
-            <button onClick={() => navigate('/teamview')}>Team View</button>
+            <button onClick={() => navigate('/view')}>Players View/ ನೋಂದಣಿಯಾದ ಆಟಗಾರರ ಪಟ್ಟಿ</button>
+            {/* <button onClick={() => navigate('/teamview')}>Team View</button>
             <button onClick={() => navigate('/login')}>Team Login</button>
             <button onClick={handleAdminClick}>KPL Organizers Panel</button> */}
           </>
