@@ -54,7 +54,7 @@ const WelcomePage = () => {
       <div className="button-container">
           <>
             <button onClick={() => navigate('/form')}>Player Registration/ ಆಟಗಾರರ ನೊಂದಣಿ</button>
-            <button onClick={() => navigate('/view')}>Players View/ ನೋಂದಣಿಯಾದ ಆಟಗಾರರ ಪಟ್ಟಿ</button>
+            {/* <button onClick={() => navigate('/view')}>Players View/ ನೋಂದಣಿಯಾದ ಆಟಗಾರರ ಪಟ್ಟಿ</button> */}
             {/* <button onClick={() => navigate('/teamview')}>Team View</button>
             <button onClick={() => navigate('/login')}>Team Login</button>
             <button onClick={handleAdminClick}>KPL Organizers Panel</button> */}

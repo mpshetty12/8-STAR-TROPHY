@@ -143,8 +143,8 @@ const FormPage = () => {
         <div className="success-message">
           <h2>Form Submitted Successfully!</h2>
           <div className="checkmark">&#10004;</div>
-          <p>ನಿಮ್ಮ ವಿವರಗಳು ಗಣನೆಗೆ ತೆಗೆದುಕೊಂಡಿದೆ, ನಿರ್ವಾಹಕರುಗಳು ನಿಮ್ಮನ್ನು ಸಂಪರ್ಕಿಸುವರು. ನಿಮ್ಮ ನೋಂದಣಿಯ ವಿವರಗಳನ್ನು ವೀಕ್ಷಿಸಲು ಈ ಕೆಳಗಿನ ಲಿಂಕ್ ಅಲ್ಲಿ ನೋಡಿ</p>
-          <button onClick={() => navigate('/view')}>Players View/ ನೋಂದಣಿಯಾದ ಆಟಗಾರರ ಪಟ್ಟಿ</button>
+          <p>ನಿಮ್ಮ ವಿವರಗಳು ಗಣನೆಗೆ ತೆಗೆದುಕೊಂಡಿದೆ, ನಿರ್ವಾಹಕರುಗಳು ನಿಮ್ಮನ್ನು ಸಂಪರ್ಕಿಸುವರು</p>
+          {/* <button onClick={() => navigate('/view')}>Players View/ ನೋಂದಣಿಯಾದ ಆಟಗಾರರ ಪಟ್ಟಿ</button> */}
         </div>
       ) : (
         <>
