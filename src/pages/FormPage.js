@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { storage, db } from './firebase';
-import { useNavigate } from 'react-router-dom';
 
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { collection, addDoc, query, where, getDocs, orderBy, limit, updateDoc, arrayUnion, doc } from 'firebase/firestore';
 import './FormPage.css';
 
 const FormPage = () => {
-  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     name: '',
