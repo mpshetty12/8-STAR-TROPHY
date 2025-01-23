@@ -14,7 +14,7 @@ const ViewPage = () => {
       const userSnapshot = await getDocs(userCollection);
       const sortedPlayers = userSnapshot.docs
         .map((doc) => ({ id: doc.id, ...doc.data() }))
-        .sort((a, b) => a.player_id - b.player_id); // Sort by player_id
+        .sort((a, b) => a.fmcid - b.fmcid); // Sort by fmcid instead of player_id
 
       setPlayers(sortedPlayers);
       setFilteredPlayers(sortedPlayers); // Initially, show all players
