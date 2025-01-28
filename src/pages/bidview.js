@@ -15,6 +15,7 @@ const BidView = () => {
       const userSnapshot = await getDocs(userCollection);
       const sortedPlayers = userSnapshot.docs
         .map((doc) => ({ id: doc.id, ...doc.data() }))
+        .filter((player) => player.orderid === 10000)
         .sort((a, b) => a.fmcid - b.fmcid);
 
       setPlayers(sortedPlayers);
