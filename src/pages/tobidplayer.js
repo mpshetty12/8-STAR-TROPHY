@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { db } from './firebase';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, doc, updateDoc } from 'firebase/firestore';
 import './tobidplayer.css';
 
 const TobidPlayer = () => {
   const [players, setPlayers] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredPlayers, setFilteredPlayers] = useState([]);
+//   const [teams, setTeams] = useState([]);
 
   useEffect(() => {
     const fetchPlayers = async () => {
@@ -14,33 +15,70 @@ const TobidPlayer = () => {
       const userSnapshot = await getDocs(userCollection);
       const sortedPlayers = userSnapshot.docs
         .map((doc) => ({ id: doc.id, ...doc.data() }))
-        .filter((player) => player.orderid === 10000) // Exclude players with orderid 10000
+        .filter((player) => player.orderid === 10000)
         .sort((a, b) => a.fmcid - b.fmcid);
 
       setPlayers(sortedPlayers);
       setFilteredPlayers(sortedPlayers);
     };
 
+    // const fetchTeams = async () => {
+    //   const teamsCollection = collection(db, 'teams');
+    //   const teamsSnapshot = await getDocs(teamsCollection);
+    //   setTeams(teamsSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
+    // };
+
     fetchPlayers();
+   // fetchTeams();
   }, []);
 
   const handleSearch = (e) => {
     const query = e.target.value.toLowerCase();
     setSearchQuery(query);
-
-    const filtered = players.filter(
-      (player) =>
-        player.name?.toLowerCase().includes(query) ||
-        player.mobile_number?.toLowerCase().includes(query)
+    setFilteredPlayers(
+      players.filter(
+        (player) =>
+          player.name?.toLowerCase().includes(query) ||
+          player.mobile_number?.toLowerCase().includes(query)
+      )
     );
-
-    setFilteredPlayers(filtered);
   };
+
+  const handleUpdateFmcid = async (player) => {
+    const newFmcid = prompt(`Enter new FMCID for ${player.name}:`);
+    if (!newFmcid || isNaN(newFmcid)) return alert('Invalid FMCID!');
+
+    const targetPlayer = players.find((p) => p.fmcid === parseInt(newFmcid));
+    if (!targetPlayer) return alert('Player with given FMCID not found!');
+
+    const playerDocRef = doc(db, '8starplayers', player.id);
+    const targetPlayerDocRef = doc(db, '8starplayers', targetPlayer.id);
+
+    await updateDoc(playerDocRef, { fmcid: parseInt(newFmcid) });
+    await updateDoc(targetPlayerDocRef, { fmcid: player.fmcid });
+
+    alert(`FMCID Swapped: ${player.name} ⇄ ${targetPlayer.name}`);
+    window.location.reload();
+  };
+
+//   const handleTeamAssign = async (player, teamId) => {
+//     const team = teams.find((t) => t.id === teamId);
+//     if (!team) return;
+
+//     const newOrderid = team.team_id * 30 + team.players.length;
+//     const playerDocRef = doc(db, '8starplayers', player.id);
+//     const teamDocRef = doc(db, 'teams', team.id);
+
+//     await updateDoc(playerDocRef, { team_id: team.team_name, orderid: newOrderid });
+//     await updateDoc(teamDocRef, { players: arrayUnion(player.fmcid) });
+
+//     alert(`${player.name} assigned to ${team.team_name}.`);
+//     window.location.reload();
+//   };
 
   return (
     <div className="teamview-container">
       <h2>All Registered Players</h2>
-
       <div className="search-container">
         <input
           type="text"
@@ -50,38 +88,35 @@ const TobidPlayer = () => {
           className="search-input"
         />
       </div>
-
       <div className="players-grid">
         {filteredPlayers.length > 0 ? (
-          filteredPlayers.map((player, index) => (
-            <div className="player-card" key={index}>
+          filteredPlayers.map((player) => (
+            <div className="player-card" key={player.id}>
               <div className="player-card-content">
                 <div className="player-image-container">
                   <img
-                    src={player?.photo_url || 'https://via.placeholder.com/150'}
-                    alt={player?.name || `Player ${index + 1}`}
+                    src={player.photo_url || 'https://via.placeholder.com/150'}
+                    alt={player.name || 'Player'}
                     className="player-image"
                   />
-                  <h4 className="player-name">
-                    {player?.name || `Player ${index + 1}`} ({player.fmcid})
-                  </h4>
+                  <h4 className="player-name">{player.name} ({player.fmcid})</h4>
                 </div>
                 <div className="player-details">
-                  <p>
-                    <strong>Shirt Size:</strong> {player.shirt_size}
-                  </p>
-                  <p>
-                    <strong>Mobile:</strong> {player.mobile_number}
-                  </p>
-                  <p>
-                    <strong>Player Type:</strong> {player.player_type}
-                  </p>
-                  <p>
-                    <strong>Jersey Number:</strong> {player.jersey_number}
-                  </p>
-                  <p>
-                    <strong>Address:</strong> {player.address}
-                  </p>
+                  <p><strong>Shirt Size:</strong> {player.shirt_size}</p>
+                  <p><strong>Mobile:</strong> {player.mobile_number}</p>
+                  <p><strong>Player Type:</strong> {player.player_type}</p>
+                  <p><strong>Jersey Number:</strong> {player.jersey_number}</p>
+                  <p><strong>Address:</strong> {player.address}</p>
+                  <button className="action-button" onClick={() => handleUpdateFmcid(player)}>Update FMCID</button>
+                  {/* <select
+                    className="team-dropdown"
+                    onChange={(e) => handleTeamAssign(player, e.target.value)}
+                  >
+                    <option value="">Assign to Team</option>
+                    {teams.map((team) => (
+                      <option key={team.id} value={team.id}>{team.team_name}</option>
+                    ))}
+                  </select> */}
                 </div>
               </div>
             </div>
