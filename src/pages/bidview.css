@@ -3,8 +3,8 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: 1450px;
-    height: 700px;
+    width: 95%;
+    height: 100%;
     background-color: #f9f9f9;
     padding: 10px;
     color: black;
@@ -13,7 +13,7 @@
  
   .player-navigation {
     display: flex;
-    gap: 10px;
+    gap: 5px;
   }
   
   .player-id-input {

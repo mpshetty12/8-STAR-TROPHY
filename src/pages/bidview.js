@@ -37,7 +37,7 @@ const BidView = () => {
 
 
   const handleGoToPlayer = () => {
-    const playerId = prompt("Enter FMCID of the player:");
+    const playerId = prompt("Enter PlayerID of the player:");
     if (!playerId) return;
   
     const index = players.findIndex((player) => player.fmcid.toString() === playerId);

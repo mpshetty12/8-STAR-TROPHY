@@ -45,11 +45,11 @@ const TobidPlayer = () => {
   };
 
   const handleUpdateFmcid = async (player) => {
-    const newFmcid = prompt(`Enter new FMCID for ${player.name}:`);
-    if (!newFmcid || isNaN(newFmcid)) return alert('Invalid FMCID!');
+    const newFmcid = prompt(`Enter new Player ID for ${player.name}:`);
+    if (!newFmcid || isNaN(newFmcid)) return alert('Invalid PlayerId!');
 
     const targetPlayer = players.find((p) => p.fmcid === parseInt(newFmcid));
-    if (!targetPlayer) return alert('Player with given FMCID not found!');
+    if (!targetPlayer) return alert('Player with given PlayerId not found!');
 
     const playerDocRef = doc(db, '8starplayers', player.id);
     const targetPlayerDocRef = doc(db, '8starplayers', targetPlayer.id);
@@ -57,7 +57,7 @@ const TobidPlayer = () => {
     await updateDoc(playerDocRef, { fmcid: parseInt(newFmcid) });
     await updateDoc(targetPlayerDocRef, { fmcid: player.fmcid });
 
-    alert(`FMCID Swapped: ${player.name} ⇄ ${targetPlayer.name}`);
+    alert(`Player id Swapped: ${player.name} ⇄ ${targetPlayer.name}`);
     window.location.reload();
   };
 
