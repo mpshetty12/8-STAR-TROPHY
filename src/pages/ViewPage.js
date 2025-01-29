@@ -38,10 +38,10 @@ const ViewPage = () => {
   };
 
   const renderPlayerCard = (player, index) => (
-    <div className="player-card" key={index}>
-      <div className="player-card-inner">
+    <div className="player-cards" key={index}>
+      <div className="player-card-inners">
         {/* Front Side */}
-        <div className="player-card-front">
+        <div className="player-card-fronts">
           <img
             src={player?.photo_url || 'https://via.placeholder.com/150'}
             alt={player?.name || `Player ${index + 1}`}
@@ -51,12 +51,12 @@ const ViewPage = () => {
         </div>
 
         {/* Back Side (Details) */}
-        <div className="player-card-back">
+        <div className="player-card-backs">
           {player ? (
             <>
               <h3>{player.name}</h3>
 
-              <div className={`player-type ${player?.player_type}`}>
+              <div className={`player-types ${player?.player_type}`}>
                 {player?.player_type && <span>{player.player_type}</span>}
               </div>
               <p>
@@ -104,7 +104,7 @@ const ViewPage = () => {
         />
       </div>
 
-      <div className="players-list">
+      <div className="players-lists">
         {filteredPlayers.length > 0 ? (
           filteredPlayers.map((player, index) => renderPlayerCard(player, index))
         ) : (

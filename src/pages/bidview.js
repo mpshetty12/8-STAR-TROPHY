@@ -35,6 +35,19 @@ const BidView = () => {
     fetchTeams();
   }, []);
 
+
+  const handleGoToPlayer = () => {
+    const playerId = prompt("Enter FMCID of the player:");
+    if (!playerId) return;
+  
+    const index = players.findIndex((player) => player.fmcid.toString() === playerId);
+    if (index !== -1) {
+      setCurrentPlayerIndex(index);
+    } else {
+      alert("Player ID not found.");
+    }
+  };
+  
   const handleNext = () => {
     if (currentPlayerIndex < players.length - 1) {
       setSelectedTeamId(''); // Reset team selection
@@ -117,15 +130,15 @@ const BidView = () => {
 
           {/* Player Details Section */}
           <div className="player-details-section">
-            <h2 className="player-name">{currentPlayer?.name}</h2>
+            <h2 className="player-namess">{currentPlayer?.name}  ({currentPlayer?.fmcid})</h2>
             <div className="player-info">
-              <p><strong>Player ID:</strong> {currentPlayer?.fmcid}</p>
               <p><strong>Shirt Size:</strong> {currentPlayer?.shirt_size}</p>
               <p><strong>Mobile:</strong> {currentPlayer?.mobile_number}</p>
               <p><strong>Player Type:</strong> {currentPlayer?.player_type}</p>
               <p><strong>Jersey Number:</strong> {currentPlayer?.jersey_number}</p>
+              <p><strong>Address:</strong> {currentPlayer?.address}</p>
             </div>
-
+            <button onClick={handleGoToPlayer}>Go To Player</button>
             <div className="team-selection">
               <label htmlFor="team-select">Assign to Team:</label>
               <select
