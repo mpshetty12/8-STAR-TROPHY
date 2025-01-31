@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { db } from './firebase';
-import { collection, getDocs, doc, updateDoc } from 'firebase/firestore';
+import { collection, getDocs} from 'firebase/firestore';
 import './tobidplayer.css';
 
 const TobidPlayer = () => {
@@ -44,23 +44,6 @@ const TobidPlayer = () => {
     );
   };
 
-  const handleUpdateFmcid = async (player) => {
-    const newFmcid = prompt(`Enter new Player ID for ${player.name}:`);
-    if (!newFmcid || isNaN(newFmcid)) return alert('Invalid PlayerId!');
-
-    const targetPlayer = players.find((p) => p.fmcid === parseInt(newFmcid));
-    if (!targetPlayer) return alert('Player with given PlayerId not found!');
-
-    const playerDocRef = doc(db, '8starplayers', player.id);
-    const targetPlayerDocRef = doc(db, '8starplayers', targetPlayer.id);
-
-    await updateDoc(playerDocRef, { fmcid: parseInt(newFmcid) });
-    await updateDoc(targetPlayerDocRef, { fmcid: player.fmcid });
-
-    alert(`Player id Swapped: ${player.name} ⇄ ${targetPlayer.name}`);
-    window.location.reload();
-  };
-
 //   const handleTeamAssign = async (player, teamId) => {
 //     const team = teams.find((t) => t.id === teamId);
 //     if (!team) return;
@@ -78,7 +61,7 @@ const TobidPlayer = () => {
 
   return (
     <div className="teamview-container">
-      <h2>All Registered Players</h2>
+      <h2>Not bidded players</h2>
       <div className="search-container">
         <input
           type="text"
@@ -107,7 +90,7 @@ const TobidPlayer = () => {
                   <p><strong>Player Type:</strong> {player.player_type}</p>
                   <p><strong>Jersey Number:</strong> {player.jersey_number}</p>
                   <p><strong>Address:</strong> {player.address}</p>
-                  <button className="action-button" onClick={() => handleUpdateFmcid(player)}>Update FMCID</button>
+                  {/* <button className="action-button" onClick={() => handleUpdateFmcid(player)}>Update FMCID</button> */}
                   {/* <select
                     className="team-dropdown"
                     onChange={(e) => handleTeamAssign(player, e.target.value)}
@@ -130,3 +113,11 @@ const TobidPlayer = () => {
 };
 
 export default TobidPlayer;
+
+
+
+
+
+
+
+

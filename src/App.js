@@ -5,6 +5,7 @@ import FormPage from './pages/FormPage';
 import ViewPage from './pages/ViewPage';
 import BidView from './pages/bidview';
 import TobidPlayer from './pages/tobidplayer';
+import TeamView from './pages/teamview';
 // import TeamView from './pages/teamview';
 // import BiddingPage from './pages/BiddingPage_temp';
 // import Admin from './pages/Admin';
@@ -21,6 +22,7 @@ function App() {
         <Route path="/view" element={<ViewPage />} />
         <Route path="/bidview" element={<BidView/>}/>
         <Route path="/bidplayers" element={<TobidPlayer/>} />
+        <Route path="/teamview" element={<TeamView/>} />
         {/* <Route path="/teamview" element={<TeamView />} />
         <Route path="/bidding" element={<BiddingPage />} />
         <Route path="/admin12345678980" element={<Admin />} />
