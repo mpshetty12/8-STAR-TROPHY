@@ -134,7 +134,7 @@ const TeamView = () => {
 
           {selectedTeam ? (
             <div className="players-list">
-              {Array.from({ length: 11 }).map((_, index) => {
+              {Array.from({ length: players.length }).map((_, index) => {
                 const player = players[index];
                 const placeholderText = `Player ${index + 1} - ${
                   index < players.length ? '' : 'Not yet registered'
