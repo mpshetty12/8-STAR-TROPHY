@@ -176,7 +176,7 @@ const FormPage = () => {
             </div>
 
             <div className="input-group">
-              <label htmlFor="mobileNumber">Mobile Numbe0r/ ಮೊಬೈಲ್ ಸಂಖ್ಯೆ</label>
+              <label htmlFor="mobileNumber">Mobile Number/ ಮೊಬೈಲ್ ಸಂಖ್ಯೆ</label>
               <input type="text" id="mobileNumber" name="mobileNumber" onChange={handleChange} required />
             </div>
 

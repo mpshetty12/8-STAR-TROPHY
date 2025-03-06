@@ -31,9 +31,9 @@ const WelcomePage = () => {
       {/* President and Vice President images */}
       <div className="leaders-container">
         <div className="leader">
-          <img src="./8star.jpeg" alt="President" className="leader-image" />
-          <p className="leader-title">ದಿನಾಂಕ : ಫೆಬ್ರವರಿ 14, 15, 16  2025</p>
-          <p className="leader-title1">ಸ್ಥಳ: ಗಾಂಧಿ ಮೈದಾನ ಬೈಂದೂರು</p>
+          {/* <img src="./8star.jpeg" alt="President" className="leader-image" /> */}
+          <p className="leader-title">ದಿನಾಂಕ : ಎಪ್ರಿಲ್ 19 ಮತ್ತು 20  2025</p>
+          <p className="leader-title1">ಸ್ಥಳ: ಉಪ್ಪುಂದ</p>
         </div>
         {/* <div className="leader">
           <img src="./surendra.jpeg" alt="Vice President" className="leader-image" />
@@ -43,7 +43,7 @@ const WelcomePage = () => {
       </div>
 
       {/* Welcome Text */}
-      <h1>8 ಸ್ಟಾರ್ ಟ್ರೋಫಿ 2025</h1>
+      <h1>ಉಪ್ಪುಂದ ಪ್ರೀಮಿಯರ್ ಲೀಗ್ - 2025</h1>
       {/* <h4>Registration Closed, Thanks everyone who are all registered to KPL-2025</h4> */}
 
       {/* Error Message for Incorrect Password */}
@@ -53,7 +53,7 @@ const WelcomePage = () => {
       <p>ಬೈಂದೂರು ವಿಧಾನಸಭಾ ಕ್ಷೇತ್ರ ವ್ಯಾಪ್ತಿಗೆ ಒಳಪಟ್ಟ ಆಟಗಾರರು ಮಾತ್ರ ನೋಂದಣಿಯಾಗಬೇಕು</p>
       <div className="button-container">
           <>
-            <button onClick={() => navigate('/teamview')}>Team View</button>
+            <button onClick={() => navigate('/form')}>ಆಟಗಾರರ ನೋಂದಣಿ</button>
             {/* <button onClick={() => navigate('/view')}>PLayers view</button> */}
             {/* <button onClick={() => navigate('/view')}>Players View/ ನೋಂದಣಿಯಾದ ಆಟಗಾರರ ಪಟ್ಟಿ</button> */}
             {/* <button onClick={() => navigate('/teamview')}>Team View</button>
@@ -64,7 +64,7 @@ const WelcomePage = () => {
 
       {/* Footer */}
       <footer className="footer" id="footerright">
-        <p>&copy; 2024 mpshetty. All rights reserved.</p>
+        <p>&copy; 2025 mpshetty. All rights reserved.</p>
       </footer>
     </div>
   );

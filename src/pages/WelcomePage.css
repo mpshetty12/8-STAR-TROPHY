@@ -2,7 +2,7 @@
 .welcome-container {
     text-align: center;
     padding: 50px 20px;
-    background: linear-gradient(135deg, #026652 0%, #24034f 100%);
+    background: linear-gradient(135deg, #410266 0%, #4f032d 100%);
     min-height: 100vh;
     display: flex;
     flex-direction: column;
