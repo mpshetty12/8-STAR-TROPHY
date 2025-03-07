@@ -31,7 +31,8 @@ const WelcomePage = () => {
       {/* President and Vice President images */}
       <div className="leaders-container">
         <div className="leader">
-          {/* <img src="./8star.jpeg" alt="President" className="leader-image" /> */}
+          <img src="./jv.jpeg" alt="President" className="leader-image" />
+          <p className="leader-title">ಇವರ ಆಶ್ರಯದಲ್ಲಿ</p>
           <p className="leader-title">ದಿನಾಂಕ : ಎಪ್ರಿಲ್ 19 ಮತ್ತು 20  2025</p>
           <p className="leader-title1">ಸ್ಥಳ: ಉಪ್ಪುಂದ</p>
         </div>
@@ -50,7 +51,7 @@ const WelcomePage = () => {
       {/* {error && <p className="error-message">{error}</p>} */}
 
       {/* Button container */}
-      <p>ಬೈಂದೂರು ವಿಧಾನಸಭಾ ಕ್ಷೇತ್ರ ವ್ಯಾಪ್ತಿಗೆ ಒಳಪಟ್ಟ ಆಟಗಾರರು ಮಾತ್ರ ನೋಂದಣಿಯಾಗಬೇಕು</p>
+      <p>ಉಪ್ಪುಂದ ಮತ್ತು ಅಳಿವೆಕೋಡಿ ವ್ಯಾಪ್ತಿಗೆ ಒಳಪಟ್ಟ ಆಟಗಾರರು ಮಾತ್ರ ನೋಂದಣಿಯಾಗಬೇಕು</p>
       <div className="button-container">
           <>
             <button onClick={() => navigate('/form')}>ಆಟಗಾರರ ನೋಂದಣಿ</button>
