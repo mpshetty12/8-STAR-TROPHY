@@ -63,6 +63,9 @@ const WelcomePage = () => {
           </>
       </div>
 
+      <p className="leader-title">ಹೆಚ್ಚಿನ ಮಾಹಿತಿಗಾಗಿ ಸಂಪರ್ಕಿಸಿ 👇</p>
+      <p className="leader-title">9880400267  ಗಣೇಶ್ <br/> 8217785112  ಈಶ್ವರ</p>
+
       {/* Footer */}
       <footer className="footer" id="footerright">
         <p>&copy; 2025 mpshetty. All rights reserved.</p>
