@@ -147,7 +147,7 @@ const FormPage = () => {
       ) : (
         <>
           <h2>Enter Player Details / ಆಟಗಾರರ ವಿವರಗಳು</h2>
-          <h4>(ಬೈಂದೂರು ವಿಧಾನಸಭಾ ಕ್ಷೇತ್ರ ವ್ಯಾಪ್ತಿಗೆ ಒಳಪಟ್ಟ ಆಟಗಾರರು ಮಾತ್ರ ನೋಂದಣಿಯಾಗಬೇಕು)</h4>
+          <h4>(ಉಪ್ಪುಂದ ಮತ್ತು ಅಳಿವೆಕೋಡಿ ವ್ಯಾಪ್ತಿಗೆ ಒಳಪಟ್ಟ ಆಟಗಾರರು ಮಾತ್ರ ನೋಂದಣಿಯಾಗಬೇಕು)</h4>
           <form onSubmit={handleSubmit}>
             <div className="input-group">
               <label htmlFor="name">Name/ ಹೆಸರು</label>
