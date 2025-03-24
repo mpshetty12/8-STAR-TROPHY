@@ -19,7 +19,7 @@ function App() {
       <Routes>
         <Route path="/" element={<WelcomePage />} />
         <Route path="/form" element={<FormPage />} />
-        <Route path="/view" element={<ViewPage />} />
+        <Route path="/players079812" element={<ViewPage />} />
         <Route path="/bidview" element={<BidView/>}/>
         <Route path="/bidplayers" element={<TobidPlayer/>} />
         <Route path="/teamview" element={<TeamView/>} />
