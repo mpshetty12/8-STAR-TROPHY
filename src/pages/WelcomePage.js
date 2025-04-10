@@ -51,12 +51,12 @@ const WelcomePage = () => {
       {/* {error && <p className="error-message">{error}</p>} */}
 
       {/* Button container */}
-      <p>ಉಪ್ಪುಂದ ಮತ್ತು ಅಳಿವೆಕೋಡಿ ವ್ಯಾಪ್ತಿಗೆ ಒಳಪಟ್ಟ ಆಟಗಾರರು ಮಾತ್ರ ನೋಂದಣಿಯಾಗಬೇಕು</p>
+      <p>ಉಪ್ಪುಂದ ಮತ್ತು ಅಳಿವೆಕೋಡಿ ವ್ಯಾಪ್ತಿಗೆ ಒಳಪಟ್ಟ ಆಟಗಾರರು ಮಾತ್ರ ನೋಂದಣಿಯಾಗಿರುತ್ತಾರೆ</p>
       <div className="button-container">
           <>
-            <button onClick={() => navigate('/form')}>ಆಟಗಾರರ ನೋಂದಣಿ</button>
+            // <button onClick={() => navigate('/form')}>ಆಟಗಾರರ ನೋಂದಣಿ</button>
             {/* <button onClick={() => navigate('/view')}>PLayers view</button> */}
-            {/* <button onClick={() => navigate('/view')}>Players View/ ನೋಂದಣಿಯಾದ ಆಟಗಾರರ ಪಟ್ಟಿ</button> */}
+            <button onClick={() => navigate('/players079812')}>Players View/ ನೋಂದಣಿಯಾದ ಆಟಗಾರರ ಪಟ್ಟಿ</button>
             {/* <button onClick={() => navigate('/teamview')}>Team View</button>
             <button onClick={() => navigate('/login')}>Team Login</button>
             <button onClick={handleAdminClick}>KPL Organizers Panel</button> */}
